@@ -4925,7 +4925,16 @@ function initAssistant() {
   document.addEventListener('keydown', function(e) {
     if (e.key === '/' && !e.ctrlKey && !e.metaKey && document.activeElement && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
       var docModal = document.getElementById('doc-modal');
-      if (docModal && docModal.classList.contains('open')) return;
+      if (docModal && docModal.classList.contains('open')) {
+        var modalSearchInp = document.getElementById('modal-ai-search-inp');
+        var modalSearchToggle = document.getElementById('modal-ai-search-toggle');
+        if (modalSearchInp && modalSearchToggle) {
+          if (modalSearchInp.style.display === 'none') { modalSearchInp.style.display = ''; }
+          modalSearchInp.focus();
+          e.preventDefault();
+        }
+        return;
+      }
       var searchInput = document.getElementById('chat-search-inp');
       if (searchInput) {
         if (searchInput.style.display === 'none') searchInput.style.display = '';
@@ -4934,6 +4943,22 @@ function initAssistant() {
       }
     }
     if (e.key === 'Escape') {
+      var docModal = document.getElementById('doc-modal');
+      if (docModal && docModal.classList.contains('open')) {
+        var mSearchInp = document.getElementById('modal-ai-search-inp');
+        if (mSearchInp && mSearchInp.style.display !== 'none') {
+          mSearchInp.style.display = 'none';
+          mSearchInp.value = '';
+          var mMsgs = document.getElementById('modal-ai-messages');
+          if (mMsgs) mMsgs.querySelectorAll('.chat-msg').forEach(function(m) { m.style.display = ''; });
+          return;
+        }
+        var mKeyPanel = document.getElementById('modal-ai-key-panel');
+        if (mKeyPanel && mKeyPanel.style.display !== 'none') { mKeyPanel.style.display = 'none'; return; }
+        var mPrompts = document.getElementById('modal-ai-prompts-panel');
+        if (mPrompts && mPrompts.style.display !== 'none') { mPrompts.style.display = 'none'; return; }
+        return;
+      }
       var conv = document.getElementById('conv-sidebar');
       if (conv && conv.style.display !== 'none') conv.style.display = 'none';
       var prompts = document.getElementById('saved-prompts-panel');
