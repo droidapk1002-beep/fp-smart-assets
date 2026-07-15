@@ -2,7 +2,70 @@
    ASSISTANT — AI chat interface
    ============================================================ */
 
-var FP_SYSTEM_PROMPT = 'Tu es un assistant p\u00e9dagogique sp\u00e9cialis\u00e9 dans la Formation Professionnelle en Alg\u00e9rie. R\u00e9ponds en fran\u00e7ais ou en arabe selon la langue de la question.';
+var FP_SYSTEM_PROMPT = 'Tu es un assistant p\u00e9dagogique sp\u00e9cialis\u00e9 dans la Formation Professionnelle en Alg\u00e9rie. R\u00e9ponds en fran\u00e7ais ou en arabe selon la langue de la question. Formate ta r\u00e9ponse en markdown si n\u00e9cessaire (titres, listes, gras, code).';
+
+/* ---- Markdown renderer ---- */
+function renderMarkdown(text) {
+  if (!text) return '';
+  var html = escapeHTML(text);
+  // Code blocks
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, function(_, lang, code) {
+    return '<pre><code class="lang-' + (lang || 'text') + '">' + code.trim() + '</code></pre>';
+  });
+  html = html.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+  html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+  html = html.replace(/^---+$/gm, '<hr>');
+  html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+  // Unordered lists
+  html = html.replace(/^[-*] (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+  // Ordered lists
+  html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, function(match) {
+    if (match.indexOf('<ul>') >= 0) return match;
+    return '<ol>' + match + '</ol>';
+  });
+  // Tables
+  html = html.replace(/(\|.+\|\n)+/g, function(tableBlock) {
+    var rows = tableBlock.trim().split('\n');
+    if (rows.length < 2) return tableBlock;
+    var headerCells = rows[0].split('|').filter(function(c) { return c.trim(); });
+    var bodyStart = 1;
+    if (rows.length > 1 && rows[1].split('|').filter(function(c) { return c.trim(); }).every(function(c) { return /^[\s:-]+$/.test(c); })) bodyStart = 2;
+    var table = '<table><thead><tr>' + headerCells.map(function(c) { return '<th>' + c.trim() + '</th>'; }).join('') + '</tr></thead><tbody>';
+    for (var i = bodyStart; i < rows.length; i++) {
+      var cells = rows[i].split('|').filter(function(c) { return c.trim(); });
+      table += '<tr>' + cells.map(function(c) { return '<td>' + c.trim() + '</td>'; }).join('') + '</tr>';
+    }
+    table += '</tbody></table>';
+    return table;
+  });
+  // Line breaks
+  html = html.replace(/\n\n(?!<)/g, '</p><p>');
+  html = html.replace(/\n(?!<)/g, '<br>');
+  html = '<p>' + html + '</p>';
+  // Clean empty/wrapper paragraphs
+  html = html.replace(/<p>\s*<\/p>/g, '');
+  html = html.replace(/<p>(<h[1-3]>)/g, '$1');
+  html = html.replace(/(<\/h[1-3]>)<\/p>/g, '$1');
+  html = html.replace(/<p>(<pre>)/g, '$1');
+  html = html.replace(/(<\/pre>)<\/p>/g, '$1');
+  html = html.replace(/<p>(<ul>)/g, '$1');
+  html = html.replace(/(<\/ul>)<\/p>/g, '$1');
+  html = html.replace(/<p>(<ol>)/g, '$1');
+  html = html.replace(/(<\/ol>)<\/p>/g, '$1');
+  html = html.replace(/<p>(<table>)/g, '$1');
+  html = html.replace(/(<\/table>)<\/p>/g, '$1');
+  html = html.replace(/<p>(<blockquote>)/g, '$1');
+  html = html.replace(/(<\/blockquote>)<\/p>/g, '$1');
+  html = html.replace(/<p>(<hr>)<\/p>/g, '$1');
+  return html;
+}
 
 async function callProvider(keyConfig, history, systemOverride, signal) {
   var systemPrompt = systemOverride || FP_SYSTEM_PROMPT;
@@ -88,6 +151,26 @@ function initAssistant() {
   populateKeySelect();
   wireInlineKeyManager();
   wireToolbarButtons();
+
+  // Keyboard shortcuts: '/' opens search
+  document.addEventListener('keydown', function(e) {
+    if (e.key === '/' && !e.ctrlKey && !e.metaKey && document.activeElement && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+      var docModal = document.getElementById('doc-modal');
+      if (docModal && docModal.classList.contains('open')) return;
+      var searchInput = document.getElementById('chat-search-inp');
+      if (searchInput) {
+        if (searchInput.style.display === 'none') searchInput.style.display = '';
+        searchInput.focus();
+        e.preventDefault();
+      }
+    }
+    if (e.key === 'Escape') {
+      var conv = document.getElementById('conv-sidebar');
+      if (conv && conv.style.display !== 'none') conv.style.display = 'none';
+      var prompts = document.getElementById('saved-prompts-panel');
+      if (prompts && prompts.style.display !== 'none') prompts.style.display = 'none';
+    }
+  });
 
   input.addEventListener('keydown', function(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -261,17 +344,13 @@ function initAssistant() {
         searchInp.style.display = searchInp.style.display === 'none' ? '' : 'none';
         if (searchInp.style.display === 'none') {
           searchInp.value = '';
-          output.querySelectorAll('.chat-msg').forEach(function(m) { m.style.display = ''; });
+          renderChatHistory();
         } else {
           searchInp.focus();
         }
       };
       searchInp.oninput = function() {
-        var q = this.value.trim().toLowerCase();
-        output.querySelectorAll('.chat-msg').forEach(function(m) {
-          if (!q) { m.style.display = ''; return; }
-          m.style.display = m.textContent.toLowerCase().includes(q) ? '' : 'none';
-        });
+        renderFilteredChat(searchInp.value.trim());
       };
     }
 
@@ -502,7 +581,12 @@ function initAssistant() {
     var div = document.createElement('div');
     div.id = id;
     div.className = 'chat-msg ' + role;
-    div.textContent = content;
+    div.dir = 'auto';
+    if (role === 'assistant' || role === 'bot') {
+      div.innerHTML = renderMarkdown(content);
+    } else {
+      div.textContent = content;
+    }
     output.appendChild(div);
     output.scrollTop = output.scrollHeight;
     return id;
@@ -538,6 +622,38 @@ function initAssistant() {
       var saved = JSON.parse(localStorage.getItem('fp_conversation') || '[]');
       saved.forEach(function(m) { appendMessage(m.role, m.content); window._chatHistory.push(m); });
     } catch (e) {}
+  }
+
+  function renderChatHistory() {
+    output.innerHTML = '';
+    window._chatHistory.forEach(function(m) { appendMessage(m.role, m.content); });
+  }
+
+  function renderFilteredChat(query) {
+    if (!query) { renderChatHistory(); return; }
+    var lower = query.toLowerCase();
+    var filtered = window._chatHistory.filter(function(m) { return (m.content || '').toLowerCase().includes(lower); });
+    if (!filtered.length) {
+      output.innerHTML = '<div style="padding:var(--space-4);text-align:center;color:var(--ink-soft);font-size:var(--fs-sm);">Aucun message trouvé pour « ' + escapeHTML(query) + ' »</div>';
+      return;
+    }
+    output.innerHTML = '';
+    filtered.forEach(function(m) {
+      var div = document.createElement('div');
+      div.className = 'chat-msg ' + (m.role === 'user' ? 'user' : 'assistant');
+      div.dir = 'auto';
+      if (m.role === 'assistant' || m.role === 'bot') {
+        div.innerHTML = renderMarkdown(m.content);
+        // Highlight matches
+        if (query) {
+          var re = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+          div.innerHTML = div.innerHTML.replace(re, '<mark style="background:var(--gold);color:var(--ink);padding:0 2px;border-radius:2px;">$1</mark>');
+        }
+      } else {
+        div.textContent = m.content;
+      }
+      output.appendChild(div);
+    });
   }
 }
 

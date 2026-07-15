@@ -10,6 +10,63 @@ function escapeAttr(str) {
   return String(str).replace(/[&<>"']/g, function(c) { return m[c]; });
 }
 
+/* ---- Markdown renderer (for bot messages) ---- */
+function renderMarkdown(text) {
+  if (!text) return '';
+  var html = escapeHTML(text);
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, function(_, lang, code) {
+    return '<pre><code class="lang-' + (lang || 'text') + '">' + code.trim() + '</code></pre>';
+  });
+  html = html.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+  html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+  html = html.replace(/^---+$/gm, '<hr>');
+  html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+  html = html.replace(/^[-*] (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+  html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, function(match) {
+    if (match.indexOf('<ul>') >= 0) return match;
+    return '<ol>' + match + '</ol>';
+  });
+  html = html.replace(/(\|.+\|\n)+/g, function(tableBlock) {
+    var rows = tableBlock.trim().split('\n');
+    if (rows.length < 2) return tableBlock;
+    var headerCells = rows[0].split('|').filter(function(c) { return c.trim(); });
+    var bodyStart = 1;
+    if (rows.length > 1 && rows[1].split('|').filter(function(c) { return c.trim(); }).every(function(c) { return /^[\s:-]+$/.test(c); })) bodyStart = 2;
+    var table = '<table><thead><tr>' + headerCells.map(function(c) { return '<th>' + c.trim() + '</th>'; }).join('') + '</tr></thead><tbody>';
+    for (var i = bodyStart; i < rows.length; i++) {
+      var cells = rows[i].split('|').filter(function(c) { return c.trim(); });
+      table += '<tr>' + cells.map(function(c) { return '<td>' + c.trim() + '</td>'; }).join('') + '</tr>';
+    }
+    table += '</tbody></table>';
+    return table;
+  });
+  html = html.replace(/\n\n(?!<)/g, '</p><p>');
+  html = html.replace(/\n(?!<)/g, '<br>');
+  html = '<p>' + html + '</p>';
+  html = html.replace(/<p>\s*<\/p>/g, '');
+  html = html.replace(/<p>(<h[1-3]>)/g, '$1');
+  html = html.replace(/(<\/h[1-3]>)<\/p>/g, '$1');
+  html = html.replace(/<p>(<pre>)/g, '$1');
+  html = html.replace(/(<\/pre>)<\/p>/g, '$1');
+  html = html.replace(/<p>(<ul>)/g, '$1');
+  html = html.replace(/(<\/ul>)<\/p>/g, '$1');
+  html = html.replace(/<p>(<ol>)/g, '$1');
+  html = html.replace(/(<\/ol>)<\/p>/g, '$1');
+  html = html.replace(/<p>(<table>)/g, '$1');
+  html = html.replace(/(<\/table>)<\/p>/g, '$1');
+  html = html.replace(/<p>(<blockquote>)/g, '$1');
+  html = html.replace(/(<\/blockquote>)<\/p>/g, '$1');
+  html = html.replace(/<p>(<hr>)<\/p>/g, '$1');
+  return html;
+}
+
 /* FP_ROUTES : URLs réelles des pages (utile sur Blogger, où les pages ne
    s'appellent pas index.html/library.html mais ont une URL du type
    /p/library.html). Laisser tel quel pour un usage local/standalone. */
@@ -513,6 +570,7 @@ function sendModalMessage(doc) {
 
   var userDiv = document.createElement('div');
   userDiv.className = 'chat-msg user';
+  userDiv.dir = 'auto';
   userDiv.textContent = text;
   messages.appendChild(userDiv);
   input.value = '';
@@ -527,6 +585,7 @@ function sendModalMessage(doc) {
   if (!keyConfig) {
     var noKey = document.createElement('div');
     noKey.className = 'chat-msg assistant';
+    noKey.dir = 'auto';
     noKey.textContent = '\u26A0\uFE0F Aucune cl\u00e9 API configur\u00e9e. Va dans l\'onglet Assistant IA pour en ajouter une.';
     messages.appendChild(noKey);
     messages.scrollTop = messages.scrollHeight;
@@ -539,6 +598,7 @@ function sendModalMessage(doc) {
 
   var thinkingDiv = document.createElement('div');
   thinkingDiv.className = 'chat-msg assistant thinking';
+  thinkingDiv.dir = 'auto';
   thinkingDiv.textContent = '\u23F3 R\u00e9flexion\u2026';
   messages.appendChild(thinkingDiv);
   messages.scrollTop = messages.scrollHeight;
@@ -551,13 +611,15 @@ function sendModalMessage(doc) {
       window._modalChatMsgs.push({ role: 'assistant', content: reply, timestamp: Date.now() });
       var replyDiv = document.createElement('div');
       replyDiv.className = 'chat-msg assistant';
-      replyDiv.textContent = reply;
+      replyDiv.dir = 'auto';
+      replyDiv.innerHTML = renderMarkdown(reply);
       messages.appendChild(replyDiv);
       messages.scrollTop = messages.scrollHeight;
     } catch (err) {
       thinkingDiv.remove();
       var errDiv = document.createElement('div');
       errDiv.className = 'chat-msg assistant';
+      errDiv.dir = 'auto';
       errDiv.textContent = '\u26A0\uFE0F Erreur: ' + err.message;
       messages.appendChild(errDiv);
       messages.scrollTop = messages.scrollHeight;
