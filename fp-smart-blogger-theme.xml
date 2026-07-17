@@ -3034,11 +3034,18 @@ function openDocModal(docId) {
 
   var preview = document.getElementById('modal-preview');
   var pUrl = doc.previewUrl || '';
+  var dlUrl = doc.downloadUrl || '';
   if (pUrl.includes('mega.nz')) {
     preview.innerHTML = '<div class="preview-fallback"><p>' + (t('modal.previewBlocked') || 'Aper\u00e7u non disponible') + '</p><p style="font-size:var(--fs-xs);color:var(--ink-soft);word-break:break-all;">' + escapeHTML(pUrl) + '</p></div>';
   } else {
     var embedUrl = pUrl;
-    if (embedUrl.includes('drive.google.com')) embedUrl = embedUrl.replace('/view?usp=drivesdk', '/preview').replace('/view', '/preview');
+    if (embedUrl.includes('drive.google.com')) {
+      var driveIdMatch = embedUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      var driveId = driveIdMatch ? driveIdMatch[1] : null;
+      if (driveId) {
+        embedUrl = 'https://docs.google.com/gview?url=' + encodeURIComponent('https://drive.google.com/uc?export=download&id=' + driveId) + '&embedded=true';
+      }
+    }
     preview.innerHTML = '<iframe src="' + escapeAttr(embedUrl) + '" title="' + escapeAttr(localized(doc.title)) + '" loading="lazy" allow="autoplay"></iframe>';
   }
 
