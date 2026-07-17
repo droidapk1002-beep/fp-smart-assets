@@ -189,6 +189,24 @@ function initAdminContent() {
     }
   });
 
+  // Tab-to-fill: pressing Tab on an empty field with placeholder fills it
+  document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Tab') return;
+    var el = document.activeElement;
+    if (!el || el.tagName === 'SELECT' || el.tagName === 'BUTTON') return;
+    if (!el.closest('#doc-form')) return;
+    if (el.value || !el.placeholder) return;
+    e.preventDefault();
+    el.value = el.placeholder;
+    var form = el.closest('form');
+    if (!form) return;
+    var inputs = Array.from(form.querySelectorAll('input, textarea, select'));
+    var idx = inputs.indexOf(el);
+    if (idx >= 0 && idx < inputs.length - 1) {
+      inputs[idx + 1].focus();
+    }
+  });
+
   // Change password
   document.getElementById('change-password-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
