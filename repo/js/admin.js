@@ -3,6 +3,7 @@
    ============================================================ */
 const STORAGE_KEYS_KEY = 'fp_api_keys';
 const ADMIN_PW_KEY = 'fp_admin_password';
+var _adminContentWired = false;
 
 const PROVIDERS = {
   anthropic: { label: 'Anthropic (Claude)', defaultModel: 'claude-sonnet-4-6', endpoint: 'https://api.anthropic.com/v1/messages' },
@@ -71,6 +72,7 @@ function initAdminPanel() {
     e.preventDefault();
     const input = document.getElementById('admin-password-input');
     if (input.value === localStorage.getItem(ADMIN_PW_KEY)) {
+      input.value = '';
       lockScreen.style.display = 'none';
       content.classList.remove('hidden');
       initAdminContent();
@@ -82,10 +84,33 @@ function initAdminPanel() {
   document.getElementById('admin-logout-btn')?.addEventListener('click', () => {
     document.getElementById('admin-content').classList.add('hidden');
     document.getElementById('admin-lock-screen').style.display = '';
+    var pwInput = document.getElementById('admin-password-input');
+    if (pwInput) pwInput.value = '';
+  });
+
+  // Clear password on navigation back/forward (bfcache)
+  window.addEventListener('pageshow', function() {
+    var pwInput = document.getElementById('admin-password-input');
+    if (pwInput) pwInput.value = '';
+  });
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') {
+      var pwInput = document.getElementById('admin-password-input');
+      if (pwInput) pwInput.value = '';
+    }
   });
 }
 
 function initAdminContent() {
+  if (_adminContentWired) {
+    renderKeys();
+    initDocManager();
+    renderDiplomasTable();
+    renderSpecialtiesTable();
+    return;
+  }
+  _adminContentWired = true;
+
   // Tabs
   document.querySelectorAll('.admin-tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {

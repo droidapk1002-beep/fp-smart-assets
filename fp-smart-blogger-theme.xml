@@ -2496,15 +2496,15 @@ body { margin: 0 !important; padding: 0 !important; }
             </div>
             <div class="form-row-cols-3">
               <div class="form-row">
-                <label data-i18n="admin.diplomaName">Nom (français)</label>
+                <label>Nom (français)</label>
                 <input type="text" id="diploma-form-name-fr" required="required" />
               </div>
               <div class="form-row">
-                <label data-i18n="admin.diplomaName">Nom (arabe)</label>
+                <label>Nom (arabe)</label>
                 <input type="text" id="diploma-form-name-ar" dir="rtl" />
               </div>
               <div class="form-row">
-                <label data-i18n="admin.diplomaName">Nom (anglais)</label>
+                <label>Nom (anglais)</label>
                 <input type="text" id="diploma-form-name-en" />
               </div>
             </div>
@@ -2624,15 +2624,15 @@ body { margin: 0 !important; padding: 0 !important; }
             </div>
             <div class="form-row-cols-3">
               <div class="form-row">
-                <label data-i18n="admin.moduleName">Nom (français)</label>
+                <label>Nom (français)</label>
                 <input type="text" id="module-form-name-fr" required="required" />
               </div>
               <div class="form-row">
-                <label data-i18n="admin.moduleName">Nom (arabe)</label>
+                <label>Nom (arabe)</label>
                 <input type="text" id="module-form-name-ar" dir="rtl" />
               </div>
               <div class="form-row">
-                <label data-i18n="admin.moduleName">Nom (anglais)</label>
+                <label>Nom (anglais)</label>
                 <input type="text" id="module-form-name-en" />
               </div>
             </div>
@@ -2685,15 +2685,15 @@ body { margin: 0 !important; padding: 0 !important; }
             </div>
             <div class="form-row-cols-3">
               <div class="form-row">
-                <label data-i18n="admin.specialtyName">Nom (français)</label>
+                <label>Nom (français)</label>
                 <input type="text" id="specialty-form-name-fr" required="required" />
               </div>
               <div class="form-row">
-                <label data-i18n="admin.specialtyName">Nom (arabe)</label>
+                <label>Nom (arabe)</label>
                 <input type="text" id="specialty-form-name-ar" dir="rtl" />
               </div>
               <div class="form-row">
-                <label data-i18n="admin.specialtyName">Nom (anglais)</label>
+                <label>Nom (anglais)</label>
                 <input type="text" id="specialty-form-name-en" />
               </div>
             </div>
@@ -3467,6 +3467,7 @@ loadSavedPrompts();
    ============================================================ */
 const STORAGE_KEYS_KEY = 'fp_api_keys';
 const ADMIN_PW_KEY = 'fp_admin_password';
+var _adminContentWired = false;
 
 const PROVIDERS = {
   anthropic: { label: 'Anthropic (Claude)', defaultModel: 'claude-sonnet-4-6', endpoint: 'https://api.anthropic.com/v1/messages' },
@@ -3535,6 +3536,7 @@ function initAdminPanel() {
     e.preventDefault();
     const input = document.getElementById('admin-password-input');
     if (input.value === localStorage.getItem(ADMIN_PW_KEY)) {
+      input.value = '';
       lockScreen.style.display = 'none';
       content.classList.remove('hidden');
       initAdminContent();
@@ -3546,10 +3548,33 @@ function initAdminPanel() {
   document.getElementById('admin-logout-btn')?.addEventListener('click', () => {
     document.getElementById('admin-content').classList.add('hidden');
     document.getElementById('admin-lock-screen').style.display = '';
+    var pwInput = document.getElementById('admin-password-input');
+    if (pwInput) pwInput.value = '';
+  });
+
+  // Clear password on navigation back/forward (bfcache)
+  window.addEventListener('pageshow', function() {
+    var pwInput = document.getElementById('admin-password-input');
+    if (pwInput) pwInput.value = '';
+  });
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') {
+      var pwInput = document.getElementById('admin-password-input');
+      if (pwInput) pwInput.value = '';
+    }
   });
 }
 
 function initAdminContent() {
+  if (_adminContentWired) {
+    renderKeys();
+    initDocManager();
+    renderDiplomasTable();
+    renderSpecialtiesTable();
+    return;
+  }
+  _adminContentWired = true;
+
   // Tabs
   document.querySelectorAll('.admin-tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
