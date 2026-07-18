@@ -267,10 +267,10 @@ function openDocModal(docId) {
   } else {
     var embedUrl = pUrl;
     if (embedUrl.includes('drive.google.com')) {
-      var driveIdMatch = embedUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
-      var driveId = driveIdMatch ? driveIdMatch[1] : null;
-      if (driveId) {
-        embedUrl = 'https://docs.google.com/gview?url=' + encodeURIComponent('https://drive.google.com/uc?export=download&id=' + driveId) + '&embedded=true';
+      embedUrl = embedUrl.replace('/view?usp=drivesdk', '/preview').replace('/view', '/preview');
+      if (!embedUrl.includes('/preview')) {
+        var driveIdMatch = embedUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+        if (driveIdMatch) embedUrl = 'https://drive.google.com/file/d/' + driveIdMatch[1] + '/preview';
       }
     }
     preview.innerHTML = '<iframe src="' + escapeAttr(embedUrl) + '" title="' + escapeAttr(localized(doc.title)) + '" loading="lazy" allow="autoplay"></iframe>';

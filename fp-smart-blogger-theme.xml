@@ -2565,12 +2565,22 @@ body { margin: 0 !important; padding: 0 !important; }
         </div>
         <div class="admin-section" id="semester-form-section" style="display:none;">
           <h3 id="semester-form-title" data-i18n="admin.addSemester"></h3>
-          <form id="semester-form" class="form-row-cols" style="margin-top:var(--space-3);">
-            <div class="form-row">
-              <label data-i18n="admin.diplomaName">Nom</label>
-              <input type="text" id="semester-form-name" required="required" placeholder="Semestre N" />
+          <form id="semester-form" style="margin-top:var(--space-3);">
+            <div class="form-row-cols-3">
+              <div class="form-row">
+                <label>Nom (français)</label>
+                <input type="text" id="semester-form-name-fr" required="required" placeholder="Semestre N" />
+              </div>
+              <div class="form-row">
+                <label>Nom (arabe)</label>
+                <input type="text" id="semester-form-name-ar" dir="rtl" />
+              </div>
+              <div class="form-row">
+                <label>Nom (anglais)</label>
+                <input type="text" id="semester-form-name-en" />
+              </div>
             </div>
-            <div class="form-row-cols">
+            <div class="form-row-cols-3">
               <div class="form-row">
                 <label>Label</label>
                 <input type="text" id="semester-form-label" placeholder="ex: S1" />
@@ -3040,10 +3050,10 @@ function openDocModal(docId) {
   } else {
     var embedUrl = pUrl;
     if (embedUrl.includes('drive.google.com')) {
-      var driveIdMatch = embedUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
-      var driveId = driveIdMatch ? driveIdMatch[1] : null;
-      if (driveId) {
-        embedUrl = 'https://docs.google.com/gview?url=' + encodeURIComponent('https://drive.google.com/uc?export=download&id=' + driveId) + '&embedded=true';
+      embedUrl = embedUrl.replace('/view?usp=drivesdk', '/preview').replace('/view', '/preview');
+      if (!embedUrl.includes('/preview')) {
+        var driveIdMatch = embedUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+        if (driveIdMatch) embedUrl = 'https://drive.google.com/file/d/' + driveIdMatch[1] + '/preview';
       }
     }
     preview.innerHTML = '<iframe src="' + escapeAttr(embedUrl) + '" title="' + escapeAttr(localized(doc.title)) + '" loading="lazy" allow="autoplay"></iframe>';
@@ -3919,7 +3929,9 @@ function wireEntityForms() {
     editingSemesterId = null;
     document.getElementById('semester-form').reset();
     var n = (APP.db.diplomas.find(function(d) { return d.id === dipId; })?.semesters?.length || 0) + 1;
-    document.getElementById('semester-form-name').value = 'Semestre ' + n;
+    document.getElementById('semester-form-name-fr').value = 'Semestre ' + n;
+    document.getElementById('semester-form-name-ar').value = '';
+    document.getElementById('semester-form-name-en').value = '';
     document.getElementById('semester-form-label').value = 'S' + n;
     document.getElementById('semester-form-order').value = n;
     document.getElementById('semester-form-title').textContent = t('admin.addSemester');
@@ -3933,12 +3945,14 @@ function wireEntityForms() {
     var dipId = document.getElementById('semester-diploma-select').value;
     if (!dipId) return;
     var order = parseInt(document.getElementById('semester-form-order').value, 10) || 1;
-    var name = document.getElementById('semester-form-name').value.trim();
+    var nameFr = document.getElementById('semester-form-name-fr').value.trim();
+    var nameAr = document.getElementById('semester-form-name-ar').value.trim();
+    var nameEn = document.getElementById('semester-form-name-en').value.trim();
     var label = document.getElementById('semester-form-label').value.trim() || 'S' + order;
     var semId = dipId + '-s' + order;
     var semester = {
       id: semId,
-      name: { fr: name, ar: 'الفصل ' + order, en: 'Semester ' + order },
+      name: { fr: nameFr, ar: nameAr || nameFr, en: nameEn || nameFr },
       label: label
     };
     var dip = APP.db.diplomas.find(function(d) { return d.id === dipId; });
@@ -3962,7 +3976,7 @@ function wireEntityForms() {
     saveCustomDiplomas(custom);
     document.getElementById('semester-form-section').style.display = 'none';
     renderSemestersTable(dipId);
-    showToast((editingSemesterId ? t('admin.entityUpdated') : t('admin.entityAdded')) + ' : ' + name);
+    showToast((editingSemesterId ? t('admin.entityUpdated') : t('admin.entityAdded')) + ' : ' + nameFr);
   });
 
   // Module
@@ -4105,6 +4119,38 @@ function wireEntityForms() {
     if (btn.classList.contains('edit-specialty-btn')) openSpecialtyForm(btn.dataset.id);
     if (btn.classList.contains('delete-specialty-btn')) deleteSpecialty(btn.dataset.id);
   });
+
+  // Auto-translate: FR → AR/EN for entity name fields
+  function wireAutoTranslateEntity(frId, arId, enId) {
+    var fr = document.getElementById(frId);
+    var ar = document.getElementById(arId);
+    var en = document.getElementById(enId);
+    if (!fr || !ar || !en) return;
+    var timer = null;
+    var autoFill = true;
+    fr.addEventListener('input', function() {
+      if (!autoFill) return;
+      clearTimeout(timer);
+      var val = fr.value;
+      if (!val) { ar.value = ''; en.value = ''; return; }
+      timer = setTimeout(async function() {
+        if (ar.value === '' || ar.dataset.autofilled === 'true') {
+          ar.dataset.autofilled = 'true';
+          ar.value = await translateText(val, 'ar');
+        }
+        if (en.value === '' || en.dataset.autofilled === 'true') {
+          en.dataset.autofilled = 'true';
+          en.value = await translateText(val, 'en');
+        }
+      }, 600);
+    });
+    ar.addEventListener('input', function() { ar.dataset.autofilled = 'false'; autoFill = false; });
+    en.addEventListener('input', function() { en.dataset.autofilled = 'false'; autoFill = false; });
+  }
+  wireAutoTranslateEntity('diploma-form-name-fr', 'diploma-form-name-ar', 'diploma-form-name-en');
+  wireAutoTranslateEntity('semester-form-name-fr', 'semester-form-name-ar', 'semester-form-name-en');
+  wireAutoTranslateEntity('module-form-name-fr', 'module-form-name-ar', 'module-form-name-en');
+  wireAutoTranslateEntity('specialty-form-name-fr', 'specialty-form-name-ar', 'specialty-form-name-en');
 }
 
 function openDiplomaForm(id) {
@@ -4187,7 +4233,9 @@ function editSemester(semId, dipId) {
   if (!dip) return;
   var sem = (dip.semesters || []).find(function(s) { return s.id === semId; });
   if (!sem) return;
-  document.getElementById('semester-form-name').value = localized(sem.name);
+  document.getElementById('semester-form-name-fr').value = sem.name?.fr || localized(sem.name);
+  document.getElementById('semester-form-name-ar').value = sem.name?.ar || '';
+  document.getElementById('semester-form-name-en').value = sem.name?.en || '';
   document.getElementById('semester-form-label').value = sem.label || '';
   var order = parseInt(semId.split('-s').pop(), 10) || 1;
   document.getElementById('semester-form-order').value = order;
@@ -5916,6 +5964,24 @@ function wireDocManagerEvents() {
       if (titleEn.value === '' && val) titleEn.value = await translateText(val, 'en');
     }, 600);
   });
+
+  const descFr = document.getElementById('doc-form-desc-fr');
+  const descAr = document.getElementById('doc-form-desc-ar');
+  const descEn = document.getElementById('doc-form-desc-en');
+  descTimer = null;
+
+  descFr.addEventListener('input', () => {
+    clearTimeout(descTimer);
+    const val = descFr.value;
+    if (!val) { descAr.value = ''; descEn.value = ''; return; }
+    descTimer = setTimeout(async () => {
+      if (descAutoFill && val) descAr.value = await translateText(val, 'ar');
+      if (descAutoFill && val) descEn.value = await translateText(val, 'en');
+    }, 600);
+  });
+
+  descAr.addEventListener('input', () => { descAutoFill = false; });
+  descEn.addEventListener('input', () => { descAutoFill = false; });
 
   const previewUrl = document.getElementById('doc-form-preview-url');
   const sizeField = document.getElementById('doc-form-size');
