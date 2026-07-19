@@ -2046,7 +2046,7 @@ body { margin: 0 !important; padding: 0 !important; }
   <section class="section" style="padding-top:0;">
     <div class="container">
       <div class="section-header">
-        <h2 data-i18n="allSpecialties">🔧 Spécialités</h2>
+        <h2 data-i18n="hero.specialtiesHeading">🔧 Spécialités</h2>
         <a href="#library" class="btn btn-ghost" data-i18n="card.viewDetails"></a>
       </div>
       <div class="quick-grid" id="specialties-grid"></div>
@@ -6361,7 +6361,7 @@ function homeRender() {
       if (specialties.length === 0) { cascadeData.specialty = ''; renderCascadePanel(); return; }
       html = '<div class="cascade-level">' +
         '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-2);margin-bottom:var(--space-3);">' +
-          '<h3 style="font-size:var(--fs-lg);margin:0;">' + dipName + ' — ' + (t('allSpecialties') || 'Specialites') + '</h3>' +
+          '<h3 style="font-size:var(--fs-lg);margin:0;">' + dipName + ' — ' + (t('filters.allSpecialties') || 'Toutes les spécialités') + '</h3>' +
         '</div>' +
         '<div class="quick-grid">';
       specialties.forEach(function(s) {

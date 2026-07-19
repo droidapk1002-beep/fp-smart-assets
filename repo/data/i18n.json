@@ -21,6 +21,7 @@
       "diplomasHeading": "🎓 Diplômes",
       "semestersHeading": "📅 Semestres",
       "recentHeading": "📂 Documents récents",
+      "specialtiesHeading": "🔧 Spécialités",
       "featuredHeading": "⭐ En vedette",
       "generalHeading": "📚 Général"
     },
@@ -261,6 +262,7 @@
       "diplomasHeading": "🎓 الشهادات",
       "semestersHeading": "📅 الفصول",
       "recentHeading": "📂 الوثائق الأخيرة",
+	  "specialtiesHeading": "🔧 التخصصات",
       "featuredHeading": "⭐ الأكثر تحميلاً",
       "generalHeading": "📚 عام"
     },
@@ -501,6 +503,7 @@
       "diplomasHeading": "🎓 Diplomas",
       "semestersHeading": "📅 Semesters",
       "recentHeading": "📂 Recent documents",
+      "specialtiesHeading": "🔧 Specialties",
       "featuredHeading": "⭐ Featured",
       "generalHeading": "📚 General"
     },

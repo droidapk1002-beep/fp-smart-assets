@@ -76,7 +76,7 @@ function homeRender() {
       if (specialties.length === 0) { cascadeData.specialty = ''; renderCascadePanel(); return; }
       html = '<div class="cascade-level">' +
         '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-2);margin-bottom:var(--space-3);">' +
-          '<h3 style="font-size:var(--fs-lg);margin:0;">' + dipName + ' — ' + (t('allSpecialties') || 'Specialites') + '</h3>' +
+          '<h3 style="font-size:var(--fs-lg);margin:0;">' + dipName + ' — ' + (t('filters.allSpecialties') || 'Toutes les spécialités') + '</h3>' +
         '</div>' +
         '<div class="quick-grid">';
       specialties.forEach(function(s) {
