@@ -1030,7 +1030,12 @@ function guessDiplomaName(raw) {
   var lower = String(rawVal).toLowerCase().trim();
   var dip = APP.db.diplomas.find(function(d) {
     var n = localized(d.name).toLowerCase();
-    return n.indexOf(lower) >= 0 || lower.indexOf(d.id) >= 0 || d.id.indexOf(lower) >= 0 || lower.indexOf(n) >= 0;
+    return d.id === lower || n === lower;
+  });
+  if (dip) return dip.id;
+  dip = APP.db.diplomas.find(function(d) {
+    var n = localized(d.name).toLowerCase();
+    return n.indexOf(lower) >= 0 || lower.indexOf(n) >= 0;
   });
   return dip ? dip.id : rawVal;
 }
@@ -1043,7 +1048,18 @@ function guessSemesterName(raw) {
     var sems = APP.db.diplomas[i].semesters || [];
     for (var j = 0; j < sems.length; j++) {
       var s = sems[j];
-      if (s.id === lower || localized(s.name).toLowerCase().indexOf(lower) >= 0 || lower.indexOf(s.label.toLowerCase()) >= 0) {
+      var slabel = s.label ? s.label.toLowerCase() : '';
+      if (s.id === lower || slabel === lower || localized(s.name).toLowerCase() === lower) {
+        return s.id;
+      }
+    }
+  }
+  for (var i = 0; i < APP.db.diplomas.length; i++) {
+    var sems = APP.db.diplomas[i].semesters || [];
+    for (var j = 0; j < sems.length; j++) {
+      var s = sems[j];
+      var slabel = s.label ? s.label.toLowerCase() : '';
+      if (localized(s.name).toLowerCase().indexOf(lower) >= 0 || lower.indexOf(slabel) >= 0) {
         return s.id;
       }
     }
