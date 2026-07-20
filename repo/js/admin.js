@@ -1040,10 +1040,27 @@ function guessDiplomaName(raw) {
   return dip ? dip.id : rawVal;
 }
 
-function guessSemesterName(raw) {
+function guessSemesterName(raw, diplomaId) {
   var rawVal = getFieldValue(raw, IMPORT_ALIASES.semester);
   if (!rawVal) return '';
   var lower = String(rawVal).toLowerCase().trim();
+
+  // Extract the bare semester number (e.g. "s1" from "s1", "semestre 1", "1")
+  var numMatch = lower.match(/(\d+)/);
+  var bareNum = numMatch ? numMatch[1] : null;
+
+  // If we know the diploma, try composite ID first: "bts" + "s1" → "bts-s1"
+  if (diplomaId && bareNum) {
+    var compositeId = diplomaId + '-s' + bareNum;
+    for (var i = 0; i < APP.db.diplomas.length; i++) {
+      var sems = APP.db.diplomas[i].semesters || [];
+      for (var j = 0; j < sems.length; j++) {
+        if (sems[j].id === compositeId) return sems[j].id;
+      }
+    }
+  }
+
+  // Exact match pass
   for (var i = 0; i < APP.db.diplomas.length; i++) {
     var sems = APP.db.diplomas[i].semesters || [];
     for (var j = 0; j < sems.length; j++) {
@@ -1054,6 +1071,8 @@ function guessSemesterName(raw) {
       }
     }
   }
+
+  // Fuzzy pass
   for (var i = 0; i < APP.db.diplomas.length; i++) {
     var sems = APP.db.diplomas[i].semesters || [];
     for (var j = 0; j < sems.length; j++) {
@@ -1148,10 +1167,11 @@ function normalizeImportItem(item) {
 
   var pages = parseInt(getFieldValue(item, IMPORT_ALIASES.pages), 10) || '';
 
+  var resolvedDiploma = guessDiplomaName(item);
   return {
     title: { ar: titleAr, fr: titleFr, en: titleEn },
-    diploma: guessDiplomaName(item),
-    semester: guessSemesterName(item),
+    diploma: resolvedDiploma,
+    semester: guessSemesterName(item, resolvedDiploma),
     specialty: guessSpecialtyName(item),
     module: guessModuleName(item),
     type: guessTypeName(item),
