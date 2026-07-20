@@ -1380,6 +1380,65 @@ function wireImportUI() {
   });
 }
 
+function generateManifestJSON() {
+  var docs = getLocalDocs();
+  var items = docs.map(function(d) {
+    return {
+      titre: d.title ? (d.title.ar || d.title.fr || d.title.en || '') : '',
+      titreAr: d.title ? d.title.ar || '' : '',
+      titreFr: d.title ? d.title.fr || '' : '',
+      titreEn: d.title ? d.title.en || '' : '',
+      diplome: d.diploma || '',
+      semestre: d.semester || '',
+      specialite: d.specialty || '',
+      module: d.module || '',
+      type_doc_label: d.type || '',
+      annee: d.year || '',
+      etablissement: d.institution || '',
+      wilaya: d.wilaya || '',
+      tailleFichier: d.size || '',
+      pages: d.pages || '',
+      urlCloud: d.previewUrl || '',
+      urlPartage: d.downloadUrl || '',
+      provider: d.host || '',
+      source: d.source || '',
+      urlSource: d.urlSource || '',
+      urlPdf: d.urlPdf || ''
+    };
+  });
+  return { items: items, generatedAt: new Date().toISOString(), count: items.length, source: 'fp-smart-v2-blogger' };
+}
+
+function downloadManifestJSON() {
+  var manifest = generateManifestJSON();
+  if (!manifest.items.length) { showToast(t('admin.importNoDocs') || 'Aucun document à exporter.'); return; }
+  var blob = new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'manifest-fp-smart-' + Date.now() + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  document.getElementById('export-manifest-stats').textContent = manifest.items.length + ' document(s) exporté(s) — ' + manifest.generatedAt;
+  showToast(manifest.items.length + ' document(s) téléchargé(s)');
+}
+
+function copyManifestToClipboard() {
+  var manifest = generateManifestJSON();
+  if (!manifest.items.length) { showToast(t('admin.importNoDocs') || 'Aucun document à exporter.'); return; }
+  var text = JSON.stringify(manifest, null, 2);
+  navigator.clipboard.writeText(text).then(function() {
+    document.getElementById('export-manifest-stats').textContent = manifest.items.length + ' document(s) copiés — ' + manifest.generatedAt;
+    showToast(manifest.items.length + ' document(s) copiés dans le presse-papier');
+  }).catch(function() {
+    showToast('Erreur: impossible de copier');
+  });
+}
+
 function initImportTab() {
   wireImportUI();
+  document.getElementById('export-manifest-download-btn')?.addEventListener('click', downloadManifestJSON);
+  document.getElementById('export-manifest-copy-btn')?.addEventListener('click', copyManifestToClipboard);
 }
