@@ -38,9 +38,10 @@ function localized(field) {
 }
 
 async function loadData() {
+  const cacheBust = '?v=2';
   const [dbRes, i18nRes] = await Promise.all([
-    fetch(FP_BASE_URL + 'data/db.json'),
-    fetch(FP_BASE_URL + 'data/i18n.json')
+    fetch(FP_BASE_URL + 'data/db.json' + cacheBust),
+    fetch(FP_BASE_URL + 'data/i18n.json' + cacheBust)
   ]);
   const defaultDb = await dbRes.json();
   const customDb = localStorage.getItem('fp_custom_db');
