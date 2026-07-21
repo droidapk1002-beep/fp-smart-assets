@@ -2463,6 +2463,36 @@ body { margin: 0 !important; padding: 0 !important; }
           <button class="btn btn-primary btn-sm" id="auto-backup-save" data-i18n="admin.autoBackupApply">Appliquer</button>
           <hr style="border:none;border-top:1px solid var(--kraft-line);margin:var(--space-4) 0;" />
           <div id="db-backup-list"></div>
+          <hr style="border:none;border-top:1px solid var(--kraft-line);margin:var(--space-4) 0;" />
+          <h4 style="font-size:var(--fs-sm);font-weight:600;margin-bottom:var(--space-2);">☁️ Synchronisation GitHub</h4>
+          <p style="font-size:var(--fs-xs);color:var(--ink-soft);margin-bottom:var(--space-2);">Push automatique de db.json vers GitHub pour synchroniser entre PC.</p>
+          <div class="form-row" style="margin-bottom:var(--space-2);">
+            <label style="font-size:var(--fs-xs);">GitHub Personal Access Token</label>
+            <input type="password" id="github-pat-input" placeholder="ghp_xxxxxxxxxxxx" style="width:100%;padding:var(--space-2);border:1px solid var(--kraft-line);border-radius:var(--radius-sm);background:var(--surface);font-family:monospace;" />
+          </div>
+          <div style="display:flex;gap:var(--space-2);margin-bottom:var(--space-2);flex-wrap:wrap;">
+            <div class="form-row" style="flex:1;min-width:200px;">
+              <label style="font-size:var(--fs-xs);">Dépôt (owner/repo)</label>
+              <input type="text" id="github-repo-input" value="droidapk1002-beep/fp-smart-assets" style="width:100%;padding:var(--space-2);border:1px solid var(--kraft-line);border-radius:var(--radius-sm);background:var(--surface);" />
+            </div>
+            <div class="form-row" style="flex:0 0 120px;">
+              <label style="font-size:var(--fs-xs);">Branche</label>
+              <input type="text" id="github-branch-input" value="main" style="width:100%;padding:var(--space-2);border:1px solid var(--kraft-line);border-radius:var(--radius-sm);background:var(--surface);" />
+            </div>
+            <div class="form-row" style="flex:0 0 250px;">
+              <label style="font-size:var(--fs-xs);">Chemin du fichier</label>
+              <input type="text" id="github-path-input" value="repo/data/db.json" style="width:100%;padding:var(--space-2);border:1px solid var(--kraft-line);border-radius:var(--radius-sm);background:var(--surface);" />
+            </div>
+          </div>
+          <div style="display:flex;gap:var(--space-2);align-items:center;flex-wrap:wrap;margin-bottom:var(--space-2);">
+            <button class="btn btn-primary btn-sm" id="github-push-btn">⬆️ Pousser db.json vers GitHub</button>
+            <button class="btn btn-secondary btn-sm" id="github-save-config-btn">💾 Sauvegarder la config</button>
+            <span id="github-push-status" style="font-size:var(--fs-xs);color:var(--ink-soft);"></span>
+          </div>
+          <label style="font-size:var(--fs-xs);display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-2);cursor:pointer;">
+            <input type="checkbox" id="github-auto-push" style="width:auto;" /> Pousser automatiquement après chaque sauvegarde
+          </label>
+          <div id="github-push-log" style="font-size:var(--fs-xs);max-height:120px;overflow-y:auto;border:1px solid var(--kraft-line);border-radius:var(--radius-sm);padding:var(--space-2);display:none;"></div>
         </div>
       </div>
     </div>
@@ -5606,12 +5636,24 @@ function upsertLocalDoc(doc) {
   saveLocalDocs(docs);
   const deleted = getDeletedIds().filter(id => id !== doc.id);
   saveDeletedIds(deleted);
+  scheduleAutoPush();
 }
 
 function deleteDocEverywhere(id) {
   saveLocalDocs(getLocalDocs().filter(d => d.id !== id));
   const deleted = getDeletedIds();
   if (!deleted.includes(id)) { deleted.push(id); saveDeletedIds(deleted); }
+  scheduleAutoPush();
+}
+
+var _autoPushTimer = null;
+function scheduleAutoPush() {
+  if (!getGithubAutoPush()) return;
+  if (_autoPushTimer) clearTimeout(_autoPushTimer);
+  _autoPushTimer = setTimeout(function() {
+    var cfg = getGithubConfig();
+    if (cfg.pat) pushDbToGithub();
+  }, 2000);
 }
 
 function nextDocId(allDocs) {
@@ -6159,6 +6201,7 @@ function wireDocManagerEvents() {
   if (searchInput) searchInput.addEventListener('input', debounce(renderAdminDocTable, 200));
 
   document.getElementById('export-db-btn')?.addEventListener('click', exportDbJson);
+  wireGithubSync();
 }
 
 async function translateText(text, targetLang) {
@@ -6231,6 +6274,150 @@ function buildExportObj() {
     wilayas: APP.db.wilayas,
     documents: APP.db.documents
   };
+}
+
+/* ---- GitHub Sync ---- */
+const GH_CONFIG_KEY = 'fp_github_sync';
+const GH_AUTO_PUSH_KEY = 'fp_github_auto_push';
+
+function getGithubConfig() {
+  try {
+    const raw = localStorage.getItem(GH_CONFIG_KEY);
+    return raw ? JSON.parse(raw) : { pat: '', repo: 'droidapk1002-beep/fp-smart-assets', branch: 'main', path: 'repo/data/db.json' };
+  } catch { return { pat: '', repo: 'droidapk1002-beep/fp-smart-assets', branch: 'main', path: 'repo/data/db.json' }; }
+}
+
+function saveGithubConfig(cfg) {
+  try { localStorage.setItem(GH_CONFIG_KEY, JSON.stringify(cfg)); } catch {}
+}
+
+function getGithubAutoPush() {
+  return localStorage.getItem(GH_AUTO_PUSH_KEY) === 'true';
+}
+
+function setGithubAutoPush(val) {
+  try { localStorage.setItem(GH_AUTO_PUSH_KEY, val ? 'true' : 'false'); } catch {}
+}
+
+function githubLog(msg, isError) {
+  var el = document.getElementById('github-push-log');
+  var status = document.getElementById('github-push-status');
+  if (el) {
+    el.style.display = 'block';
+    var line = document.createElement('div');
+    line.style.color = isError ? 'var(--red-stamp)' : 'var(--ink-soft)';
+    line.style.marginBottom = '2px';
+    line.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+    el.appendChild(line);
+    el.scrollTop = el.scrollHeight;
+  }
+  if (status) {
+    status.textContent = isError ? '❌ ' + msg : '✅ ' + msg;
+    status.style.color = isError ? 'var(--red-stamp)' : 'var(--green)';
+  }
+}
+
+async function pushDbToGithub() {
+  var cfg = getGithubConfig();
+  if (!cfg.pat) { showToast('Token GitHub manquant'); githubLog('Token GitHub manquant', true); return; }
+  if (!cfg.repo || !cfg.branch || !cfg.path) { showToast('Config GitHub incomplète'); githubLog('Config GitHub incomplète', true); return; }
+
+  var statusEl = document.getElementById('github-push-status');
+  if (statusEl) { statusEl.textContent = '⏳ Push en cours…'; statusEl.style.color = 'var(--ink-soft)'; }
+  githubLog('Préparation du push…');
+
+  try {
+    var exportObj = buildExportObj();
+    var content = JSON.stringify(exportObj, null, 2);
+    var encodedContent = btoa(unescape(encodeURIComponent(content)));
+
+    var apiUrl = 'https://api.github.com/repos/' + cfg.repo + '/contents/' + cfg.path;
+    var headers = { 'Authorization': 'token ' + cfg.pat, 'Accept': 'application/vnd.github.v3+json' };
+
+    var existingSha = null;
+    var getRes = await fetch(apiUrl + '?ref=' + cfg.branch, { headers: headers });
+    if (getRes.ok) {
+      var existing = await getRes.json();
+      existingSha = existing.sha;
+      githubLog('Fichier existant trouvé, SHA: ' + existingSha.substring(0, 8));
+    } else if (getRes.status === 404) {
+      githubLog('Fichier inexistant, création…');
+    } else {
+      var errText = await getRes.text();
+      githubLog('Erreur lecture: ' + getRes.status + ' ' + errText, true);
+      showToast('Erreur lecture GitHub');
+      return;
+    }
+
+    var body = { message: 'chore(db): update db.json via fp-smart admin [' + new Date().toISOString().slice(0, 19) + ']', content: encodedContent, branch: cfg.branch };
+    if (existingSha) body.sha = existingSha;
+
+    var putRes = await fetch(apiUrl, { method: 'PUT', headers: headers, body: JSON.stringify(body) });
+    if (putRes.ok) {
+      var result = await putRes.json();
+      githubLog('Push réussi ! Commit: ' + (result.commit?.sha || '').substring(0, 8));
+      showToast('db.json poussé sur GitHub ✓');
+      saveDbBackup('github-push', exportObj);
+      renderDbBackupList();
+    } else {
+      var errBody = await putRes.text();
+      githubLog('Erreur push: ' + putRes.status + ' ' + errBody, true);
+      showToast('Erreur push GitHub');
+    }
+  } catch (err) {
+    githubLog('Erreur réseau: ' + err.message, true);
+    showToast('Erreur: ' + err.message);
+  }
+}
+
+function wireGithubSync() {
+  var patInput = document.getElementById('github-pat-input');
+  var repoInput = document.getElementById('github-repo-input');
+  var branchInput = document.getElementById('github-branch-input');
+  var pathInput = document.getElementById('github-path-input');
+  var pushBtn = document.getElementById('github-push-btn');
+  var saveCfgBtn = document.getElementById('github-save-config-btn');
+  var autoPushCheck = document.getElementById('github-auto-push');
+
+  var cfg = getGithubConfig();
+  if (patInput) patInput.value = cfg.pat || '';
+  if (repoInput) repoInput.value = cfg.repo || '';
+  if (branchInput) branchInput.value = cfg.branch || 'main';
+  if (pathInput) pathInput.value = cfg.path || 'repo/data/db.json';
+  if (autoPushCheck) autoPushCheck.checked = getGithubAutoPush();
+
+  if (saveCfgBtn) {
+    saveCfgBtn.addEventListener('click', function() {
+      var newCfg = {
+        pat: patInput ? patInput.value.trim() : '',
+        repo: repoInput ? repoInput.value.trim() : '',
+        branch: branchInput ? branchInput.value.trim() : 'main',
+        path: pathInput ? pathInput.value.trim() : 'repo/data/db.json'
+      };
+      saveGithubConfig(newCfg);
+      showToast('Config GitHub sauvegardée');
+      githubLog('Config sauvegardée');
+    });
+  }
+
+  if (pushBtn) {
+    pushBtn.addEventListener('click', function() {
+      var cfg2 = getGithubConfig();
+      cfg2.pat = patInput ? patInput.value.trim() : cfg2.pat;
+      cfg2.repo = repoInput ? repoInput.value.trim() : cfg2.repo;
+      cfg2.branch = branchInput ? branchInput.value.trim() : cfg2.branch;
+      cfg2.path = pathInput ? pathInput.value.trim() : cfg2.path;
+      saveGithubConfig(cfg2);
+      pushDbToGithub();
+    });
+  }
+
+  if (autoPushCheck) {
+    autoPushCheck.addEventListener('change', function() {
+      setGithubAutoPush(autoPushCheck.checked);
+      showToast(autoPushCheck.checked ? 'Auto-push activé' : 'Auto-push désactivé');
+    });
+  }
 }
 
 /* ---- Import & Backups ---- */
