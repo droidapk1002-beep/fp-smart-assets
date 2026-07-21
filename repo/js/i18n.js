@@ -38,10 +38,11 @@ function localized(field) {
 }
 
 async function loadData() {
-  const cacheBust = '?v=3';
-  const [dbRes, i18nRes] = await Promise.all([
-    fetch(FP_BASE_URL + 'data/db.json' + cacheBust),
-    fetch(FP_BASE_URL + 'data/i18n.json' + cacheBust)
+  var ghRaw = 'https://raw.githubusercontent.com/droidapk1002-beep/fp-smart-assets/main/';
+  var dayStamp = new Date().toISOString().slice(0, 10);
+  var [dbRes, i18nRes] = await Promise.all([
+    fetch(ghRaw + 'data/db.json?t=' + dayStamp),
+    fetch(FP_BASE_URL + 'data/i18n.json?v=3')
   ]);
   const defaultDb = await dbRes.json();
   const customDb = localStorage.getItem('fp_custom_db');
