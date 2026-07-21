@@ -2819,8 +2819,8 @@ body { margin: 0 !important; padding: 0 !important; }
   window.FP_ROUTES = { home: "#home", library: "#library", assistant: "#assistant", admin: "#admin" };
 //]]>
 </script>
-<script src="https://cdn.jsdelivr.net/gh/droidapk1002-beep/fp-smart-assets@main/js/i18n.js?v=2"></script>
-<script src="https://cdn.jsdelivr.net/gh/droidapk1002-beep/fp-smart-assets@main/js/icons.js?v=2"></script>
+<script src="https://cdn.jsdelivr.net/gh/droidapk1002-beep/fp-smart-assets@main/js/i18n.js?v=3"></script>
+<script src="https://cdn.jsdelivr.net/gh/droidapk1002-beep/fp-smart-assets@main/js/icons.js?v=3"></script>
 <script>
 //<![CDATA[
 /* LAYOUT — header, footer, modal, drawer */
@@ -3518,7 +3518,7 @@ loadSavedPrompts();
 
 //]]>
 </script>
-<script src="https://cdn.jsdelivr.net/gh/droidapk1002-beep/fp-smart-assets@main/js/documents.js?v=2"></script>
+<script src="https://cdn.jsdelivr.net/gh/droidapk1002-beep/fp-smart-assets@main/js/documents.js?v=3"></script>
 <script>
 //<![CDATA[
 /* ============================================================
