@@ -6327,6 +6327,7 @@ async function pushDbToGithub() {
   githubLog('Préparation du push…');
 
   try {
+    applyLocalDocOverrides();
     var exportObj = buildExportObj();
     var content = JSON.stringify(exportObj, null, 2);
     var encodedContent = btoa(unescape(encodeURIComponent(content)));
