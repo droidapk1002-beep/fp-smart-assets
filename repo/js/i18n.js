@@ -38,7 +38,7 @@ function localized(field) {
 }
 
 async function loadData() {
-  var ghRaw = 'https://raw.githubusercontent.com/droidapk1002-beep/fp-smart-assets/main/';
+  var ghRaw = 'https://raw.githubusercontent.com/droidapk1002-beep/fp-smart-assets/main/repo/';
   var dayStamp = new Date().toISOString().slice(0, 10);
   var [dbRes, i18nRes] = await Promise.all([
     fetch(ghRaw + 'data/db.json?t=' + dayStamp),
