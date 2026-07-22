@@ -6272,7 +6272,14 @@ function buildExportObj() {
     documentTypes: APP.db.documentTypes,
     institutions: APP.db.institutions,
     wilayas: APP.db.wilayas,
-    documents: APP.db.documents
+    documents: APP.db.documents,
+    hidden: {
+      docIds: getHiddenIds(),
+      diplomaIds: getEntityHiddenIds('diplomas'),
+      semesterIds: getEntityHiddenIds('semesters'),
+      moduleIds: getEntityHiddenIds('modules'),
+      specialtyIds: getEntityHiddenIds('specialties')
+    }
   };
 }
 

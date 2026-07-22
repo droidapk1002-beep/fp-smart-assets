@@ -51,6 +51,14 @@ async function loadData() {
   } else {
     APP.db = defaultDb;
   }
+  if (defaultDb.hidden) {
+    var h = defaultDb.hidden;
+    if (h.docIds && !localStorage.getItem('fp_hidden_doc_ids')) localStorage.setItem('fp_hidden_doc_ids', JSON.stringify(h.docIds));
+    if (h.diplomaIds && !localStorage.getItem('fp_hidden_diploma_ids')) localStorage.setItem('fp_hidden_diploma_ids', JSON.stringify(h.diplomaIds));
+    if (h.semesterIds && !localStorage.getItem('fp_hidden_semester_ids')) localStorage.setItem('fp_hidden_semester_ids', JSON.stringify(h.semesterIds));
+    if (h.moduleIds && !localStorage.getItem('fp_hidden_module_ids')) localStorage.setItem('fp_hidden_module_ids', JSON.stringify(h.moduleIds));
+    if (h.specialtyIds && !localStorage.getItem('fp_hidden_specialty_ids')) localStorage.setItem('fp_hidden_specialty_ids', JSON.stringify(h.specialtyIds));
+  }
   APP.i18n = await i18nRes.json();
 }
 
