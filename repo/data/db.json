@@ -7,112 +7,651 @@
   "diplomas": [
     {
       "id": "cmp",
-      "name": { "fr": "CMP — Certificat de Maîtrise Professionnelle", "ar": "شهادة الإتقان المهني", "en": "Certificate of Professional Mastery" },
+      "name": {
+        "fr": "CMP — Certificat de Maîtrise Professionnelle",
+        "ar": "شهادة الإتقان المهني",
+        "en": "Certificate of Professional Mastery"
+      },
       "level": 3,
       "duration": "18 mois",
       "semesters": [
-        { "id": "cmp-s1", "name": { "fr": "Semestre 1", "ar": "الفصل الأول", "en": "Semester 1" }, "label": "S1" },
-        { "id": "cmp-s2", "name": { "fr": "Semestre 2", "ar": "الفصل الثاني", "en": "Semester 2" }, "label": "S2" },
-        { "id": "cmp-s3", "name": { "fr": "Semestre 3", "ar": "الفصل الثالث", "en": "Semester 3" }, "label": "S3" }
+        {
+          "id": "cmp-s1",
+          "name": {
+            "fr": "Semestre 1",
+            "ar": "الفصل الأول",
+            "en": "Semester 1"
+          },
+          "label": "S1"
+        },
+        {
+          "id": "cmp-s2",
+          "name": {
+            "fr": "Semestre 2",
+            "ar": "الفصل الثاني",
+            "en": "Semester 2"
+          },
+          "label": "S2"
+        },
+        {
+          "id": "cmp-s3",
+          "name": {
+            "fr": "Semestre 3",
+            "ar": "الفصل الثالث",
+            "en": "Semester 3"
+          },
+          "label": "S3"
+        }
       ]
     },
     {
       "id": "bt",
-      "name": { "fr": "BT — Brevet de Technicien", "ar": "شهادة التقني", "en": "Technician Certificate" },
+      "name": {
+        "fr": "BT — Brevet de Technicien",
+        "ar": "شهادة التقني",
+        "en": "Technician Certificate"
+      },
       "level": 4,
       "duration": "24 mois",
       "semesters": [
-        { "id": "bt-s1", "name": { "fr": "Semestre 1", "ar": "الفصل الأول", "en": "Semester 1" }, "label": "S1" },
-        { "id": "bt-s2", "name": { "fr": "Semestre 2", "ar": "الفصل الثاني", "en": "Semester 2" }, "label": "S2" },
-        { "id": "bt-s3", "name": { "fr": "Semestre 3", "ar": "الفصل الثالث", "en": "Semester 3" }, "label": "S3" },
-        { "id": "bt-s4", "name": { "fr": "Semestre 4", "ar": "الفصل الرابع", "en": "Semester 4" }, "label": "S4" }
+        {
+          "id": "bt-s1",
+          "name": {
+            "fr": "Semestre 1",
+            "ar": "الفصل الأول",
+            "en": "Semester 1"
+          },
+          "label": "S1"
+        },
+        {
+          "id": "bt-s2",
+          "name": {
+            "fr": "Semestre 2",
+            "ar": "الفصل الثاني",
+            "en": "Semester 2"
+          },
+          "label": "S2"
+        },
+        {
+          "id": "bt-s3",
+          "name": {
+            "fr": "Semestre 3",
+            "ar": "الفصل الثالث",
+            "en": "Semester 3"
+          },
+          "label": "S3"
+        },
+        {
+          "id": "bt-s4",
+          "name": {
+            "fr": "Semestre 4",
+            "ar": "الفصل الرابع",
+            "en": "Semester 4"
+          },
+          "label": "S4"
+        }
       ]
     },
     {
       "id": "bts",
-      "name": { "fr": "BTS — Brevet de Technicien Supérieur", "ar": "شهادة التقني السامي", "en": "Higher Technician Certificate" },
+      "name": {
+        "fr": "BTS — Brevet de Technicien Supérieur",
+        "ar": "شهادة التقني السامي",
+        "en": "Higher Technician Certificate"
+      },
       "level": 5,
       "duration": "30 mois",
       "semesters": [
-        { "id": "bts-s1", "name": { "fr": "Semestre 1", "ar": "الفصل الأول", "en": "Semester 1" }, "label": "S1" },
-        { "id": "bts-s2", "name": { "fr": "Semestre 2", "ar": "الفصل الثاني", "en": "Semester 2" }, "label": "S2" },
-        { "id": "bts-s3", "name": { "fr": "Semestre 3", "ar": "الفصل الثالث", "en": "Semester 3" }, "label": "S3" },
-        { "id": "bts-s4", "name": { "fr": "Semestre 4", "ar": "الفصل الرابع", "en": "Semester 4" }, "label": "S4" },
-        { "id": "bts-s5", "name": { "fr": "Semestre 5", "ar": "الفصل الخامس", "en": "Semester 5" }, "label": "S5" }
+        {
+          "id": "bts-s1",
+          "name": {
+            "fr": "Semestre 1",
+            "ar": "الفصل الأول",
+            "en": "Semester 1"
+          },
+          "label": "S1"
+        },
+        {
+          "id": "bts-s2",
+          "name": {
+            "fr": "Semestre 2",
+            "ar": "الفصل الثاني",
+            "en": "Semester 2"
+          },
+          "label": "S2"
+        },
+        {
+          "id": "bts-s3",
+          "name": {
+            "fr": "Semestre 3",
+            "ar": "الفصل الثالث",
+            "en": "Semester 3"
+          },
+          "label": "S3"
+        },
+        {
+          "id": "bts-s4",
+          "name": {
+            "fr": "Semestre 4",
+            "ar": "الفصل الرابع",
+            "en": "Semester 4"
+          },
+          "label": "S4"
+        },
+        {
+          "id": "bts-s5",
+          "name": {
+            "fr": "Semestre 5",
+            "ar": "الفصل الخامس",
+            "en": "Semester 5"
+          },
+          "label": "S5"
+        },
+        {
+          "id": "bts-s6",
+          "name": {
+            "fr": "Semestre 6",
+            "ar": "الفصل 6",
+            "en": "Semester 6"
+          },
+          "label": "S6"
+        },
+        {
+          "id": "bts-s6",
+          "name": {
+            "fr": "Semestre 6",
+            "ar": "الفصل 6",
+            "en": "Semester 6"
+          },
+          "label": "S6"
+        },
+        {
+          "id": "bts-s6",
+          "name": {
+            "fr": "Semestre 6",
+            "ar": "الفصل 6",
+            "en": "Semester 6"
+          },
+          "label": "S6"
+        }
       ]
     },
     {
       "id": "bp",
-      "name": { "fr": "BP — Brevet Professionnel", "ar": "شهادة المهني", "en": "Professional Certificate" },
+      "name": {
+        "fr": "BP — Brevet Professionnel",
+        "ar": "شهادة المهني",
+        "en": "Professional Certificate"
+      },
       "level": 3,
       "duration": "18–24 mois",
       "semesters": [
-        { "id": "bp-s1", "name": { "fr": "Semestre 1", "ar": "الفصل الأول", "en": "Semester 1" }, "label": "S1" },
-        { "id": "bp-s2", "name": { "fr": "Semestre 2", "ar": "الفصل الثاني", "en": "Semester 2" }, "label": "S2" },
-        { "id": "bp-s3", "name": { "fr": "Semestre 3", "ar": "الفصل الثالث", "en": "Semester 3" }, "label": "S3" },
-        { "id": "bp-s4", "name": { "fr": "Semestre 4", "ar": "الفصل الرابع", "en": "Semester 4" }, "label": "S4" }
+        {
+          "id": "bp-s1",
+          "name": {
+            "fr": "Semestre 1",
+            "ar": "الفصل الأول",
+            "en": "Semester 1"
+          },
+          "label": "S1"
+        },
+        {
+          "id": "bp-s2",
+          "name": {
+            "fr": "Semestre 2",
+            "ar": "الفصل الثاني",
+            "en": "Semester 2"
+          },
+          "label": "S2"
+        },
+        {
+          "id": "bp-s3",
+          "name": {
+            "fr": "Semestre 3",
+            "ar": "الفصل الثالث",
+            "en": "Semester 3"
+          },
+          "label": "S3"
+        },
+        {
+          "id": "bp-s4",
+          "name": {
+            "fr": "Semestre 4",
+            "ar": "الفصل الرابع",
+            "en": "Semester 4"
+          },
+          "label": "S4"
+        }
       ]
     }
   ],
   "specialties": [
-    { "id": "genie-electrique", "name": { "fr": "Génie Électrique", "ar": "الهندسة الكهربائية", "en": "Electrical Engineering" }, "color": "#d97706", "icon": "cpu" },
-    { "id": "genie-civil", "name": { "fr": "Génie Civil", "ar": "الهندسة المدنية", "en": "Civil Engineering" }, "color": "#059669", "icon": "calculator" },
-    { "id": "gestion-administration", "name": { "fr": "Gestion et Administration", "ar": "التسيير والإدارة", "en": "Management & Administration" }, "color": "#7c3aed", "icon": "shield" },
-    { "id": "informatique", "name": { "fr": "Informatique", "ar": "الإعلام الآلي", "en": "Computer Science" }, "color": "#2563eb", "icon": "cpu" },
-    { "id": "hotellerie-tourisme", "name": { "fr": "Hôtellerie et Tourisme", "ar": "الفندقة والسياحة", "en": "Hotel & Tourism" }, "color": "#dc2626", "icon": "map" }
+    {
+      "id": "genie-electrique",
+      "name": {
+        "fr": "Génie Électrique",
+        "ar": "الهندسة الكهربائية",
+        "en": "Electrical Engineering"
+      },
+      "color": "#d97706",
+      "icon": "cpu"
+    },
+    {
+      "id": "genie-civil",
+      "name": {
+        "fr": "Génie Civil",
+        "ar": "الهندسة المدنية",
+        "en": "Civil Engineering"
+      },
+      "color": "#059669",
+      "icon": "calculator"
+    },
+    {
+      "id": "gestion-administration",
+      "name": {
+        "fr": "Gestion et Administration",
+        "ar": "التسيير والإدارة",
+        "en": "Management & Administration"
+      },
+      "color": "#7c3aed",
+      "icon": "shield"
+    },
+    {
+      "id": "informatique",
+      "name": {
+        "fr": "Base de données-Informatique",
+        "ar": "الإعلام الآلي",
+        "en": "Computer Science"
+      },
+      "color": "#2563eb",
+      "icon": "cpu"
+    },
+    {
+      "id": "hotellerie-tourisme",
+      "name": {
+        "fr": "Hôtellerie et Tourisme",
+        "ar": "الفندقة والسياحة",
+        "en": "Hotel & Tourism"
+      },
+      "color": "#dc2626",
+      "icon": "map"
+    }
   ],
   "modules": [
-    { "id": "mod-elec-base", "name": { "fr": "Électricité de base", "ar": "الكهرباء الأساسية", "en": "Basic Electricity" }, "specialty": "genie-electrique" },
-    { "id": "mod-elec-install", "name": { "fr": "Installations électriques", "ar": "التركيبات الكهربائية", "en": "Electrical Installations" }, "specialty": "genie-electrique" },
-    { "id": "mod-elec-auto", "name": { "fr": "Automatismes", "ar": "الآلية", "en": "Automation" }, "specialty": "genie-electrique" },
-    { "id": "mod-elec-mesure", "name": { "fr": "Mesures électriques", "ar": "القياسات الكهربائية", "en": "Electrical Measurements" }, "specialty": "genie-electrique" },
-    { "id": "mod-civil-materiaux", "name": { "fr": "Matériaux de construction", "ar": "مواد البناء", "en": "Construction Materials" }, "specialty": "genie-civil" },
-    { "id": "mod-civil-topo", "name": { "fr": "Topographie", "ar": "المساحة", "en": "Topography" }, "specialty": "genie-civil" },
-    { "id": "mod-civil-beton", "name": { "fr": "Béton armé", "ar": "الخرسانة المسلحة", "en": "Reinforced Concrete" }, "specialty": "genie-civil" },
-    { "id": "mod-civil-plan", "name": { "fr": "Plans et devis", "ar": "المخططات والتقديرات", "en": "Plans & Estimates" }, "specialty": "genie-civil" },
-    { "id": "mod-admin-compta", "name": { "fr": "Comptabilité générale", "ar": "المحاسبة العامة", "en": "General Accounting" }, "specialty": "gestion-administration" },
-    { "id": "mod-admin-droit", "name": { "fr": "Droit du travail", "ar": "قانون العمل", "en": "Labor Law" }, "specialty": "gestion-administration" },
-    { "id": "mod-admin-rh", "name": { "fr": "Ressources humaines", "ar": "الموارد البشرية", "en": "Human Resources" }, "specialty": "gestion-administration" },
-    { "id": "mod-admin-com", "name": { "fr": "Communication professionnelle", "ar": "الاتصال المهني", "en": "Professional Communication" }, "specialty": "gestion-administration" },
-    { "id": "mod-admin-fiscal", "name": { "fr": "Fiscalité", "ar": "الجباية", "en": "Taxation" }, "specialty": "gestion-administration" },
-    { "id": "mod-info-algo", "name": { "fr": "Algorithmique et programmation", "ar": "الخوارزميات والبرمجة", "en": "Algorithms & Programming" }, "specialty": "informatique" },
-    { "id": "mod-info-web", "name": { "fr": "Développement web", "ar": "تطوير الويب", "en": "Web Development" }, "specialty": "informatique" },
-    { "id": "mod-info-base", "name": { "fr": "Bases de données", "ar": "قواعد البيانات", "en": "Databases" }, "specialty": "informatique" },
-    { "id": "mod-info-reseau", "name": { "fr": "Réseaux", "ar": "الشبكات", "en": "Networks" }, "specialty": "informatique" },
-    { "id": "mod-hot-restau", "name": { "fr": "Restauration", "ar": "المطعمة", "en": "Catering" }, "specialty": "hotellerie-tourisme" },
-    { "id": "mod-hot-heberg", "name": { "fr": "Hébergement", "ar": "الإيواء", "en": "Accommodation" }, "specialty": "hotellerie-tourisme" },
-    { "id": "mod-hot-cuisine", "name": { "fr": "Cuisine professionnelle", "ar": "الطبخ المهني", "en": "Professional Cooking" }, "specialty": "hotellerie-tourisme" },
-    { "id": "mod-hot-accueil", "name": { "fr": "Accueil et service", "ar": "الاستقبال والخدمة", "en": "Reception & Service" }, "specialty": "hotellerie-tourisme" },
-    { "id": "mod-hot-tourisme", "name": { "fr": "Tourisme", "ar": "السياحة", "en": "Tourism" }, "specialty": "hotellerie-tourisme" }
+    {
+      "id": "mod-elec-base",
+      "name": {
+        "fr": "Électricité de base",
+        "ar": "الكهرباء الأساسية",
+        "en": "Basic Electricity"
+      },
+      "specialty": "genie-electrique"
+    },
+    {
+      "id": "mod-elec-install",
+      "name": {
+        "fr": "Installations électriques",
+        "ar": "التركيبات الكهربائية",
+        "en": "Electrical Installations"
+      },
+      "specialty": "genie-electrique"
+    },
+    {
+      "id": "mod-elec-auto",
+      "name": {
+        "fr": "Automatismes",
+        "ar": "الآلية",
+        "en": "Automation"
+      },
+      "specialty": "genie-electrique"
+    },
+    {
+      "id": "mod-elec-mesure",
+      "name": {
+        "fr": "Mesures électriques",
+        "ar": "القياسات الكهربائية",
+        "en": "Electrical Measurements"
+      },
+      "specialty": "genie-electrique"
+    },
+    {
+      "id": "mod-civil-materiaux",
+      "name": {
+        "fr": "Matériaux de construction",
+        "ar": "مواد البناء",
+        "en": "Construction Materials"
+      },
+      "specialty": "genie-civil"
+    },
+    {
+      "id": "mod-civil-topo",
+      "name": {
+        "fr": "Topographie",
+        "ar": "المساحة",
+        "en": "Topography"
+      },
+      "specialty": "genie-civil"
+    },
+    {
+      "id": "mod-civil-beton",
+      "name": {
+        "fr": "Béton armé",
+        "ar": "الخرسانة المسلحة",
+        "en": "Reinforced Concrete"
+      },
+      "specialty": "genie-civil"
+    },
+    {
+      "id": "mod-civil-plan",
+      "name": {
+        "fr": "Plans et devis",
+        "ar": "المخططات والتقديرات",
+        "en": "Plans & Estimates"
+      },
+      "specialty": "genie-civil"
+    },
+    {
+      "id": "mod-admin-compta",
+      "name": {
+        "fr": "Comptabilité générale",
+        "ar": "المحاسبة العامة",
+        "en": "General Accounting"
+      },
+      "specialty": "gestion-administration"
+    },
+    {
+      "id": "mod-admin-droit",
+      "name": {
+        "fr": "Droit du travail",
+        "ar": "قانون العمل",
+        "en": "Labor Law"
+      },
+      "specialty": "gestion-administration"
+    },
+    {
+      "id": "mod-admin-rh",
+      "name": {
+        "fr": "Ressources humaines",
+        "ar": "الموارد البشرية",
+        "en": "Human Resources"
+      },
+      "specialty": "gestion-administration"
+    },
+    {
+      "id": "mod-admin-com",
+      "name": {
+        "fr": "Communication professionnelle",
+        "ar": "الاتصال المهني",
+        "en": "Professional Communication"
+      },
+      "specialty": "gestion-administration"
+    },
+    {
+      "id": "mod-admin-fiscal",
+      "name": {
+        "fr": "Fiscalité",
+        "ar": "الجباية",
+        "en": "Taxation"
+      },
+      "specialty": "gestion-administration"
+    },
+    {
+      "id": "mod-info-algo",
+      "name": {
+        "fr": "Algorithmique et programmation",
+        "ar": "الخوارزميات والبرمجة",
+        "en": "Algorithms & Programming"
+      },
+      "specialty": "informatique"
+    },
+    {
+      "id": "mod-info-web",
+      "name": {
+        "fr": "Développement web",
+        "ar": "تطوير الويب",
+        "en": "Web Development"
+      },
+      "specialty": "informatique"
+    },
+    {
+      "id": "mod-info-base",
+      "name": {
+        "fr": "Bases de données",
+        "ar": "قواعد البيانات",
+        "en": "Databases"
+      },
+      "specialty": "informatique"
+    },
+    {
+      "id": "mod-info-reseau",
+      "name": {
+        "fr": "Réseaux",
+        "ar": "الشبكات",
+        "en": "Networks"
+      },
+      "specialty": "informatique"
+    },
+    {
+      "id": "mod-hot-restau",
+      "name": {
+        "fr": "Restauration",
+        "ar": "المطعمة",
+        "en": "Catering"
+      },
+      "specialty": "hotellerie-tourisme"
+    },
+    {
+      "id": "mod-hot-heberg",
+      "name": {
+        "fr": "Hébergement",
+        "ar": "الإيواء",
+        "en": "Accommodation"
+      },
+      "specialty": "hotellerie-tourisme"
+    },
+    {
+      "id": "mod-hot-cuisine",
+      "name": {
+        "fr": "Cuisine professionnelle",
+        "ar": "الطبخ المهني",
+        "en": "Professional Cooking"
+      },
+      "specialty": "hotellerie-tourisme"
+    },
+    {
+      "id": "mod-hot-accueil",
+      "name": {
+        "fr": "Accueil et service",
+        "ar": "الاستقبال والخدمة",
+        "en": "Reception & Service"
+      },
+      "specialty": "hotellerie-tourisme"
+    },
+    {
+      "id": "mod-hot-tourisme",
+      "name": {
+        "fr": "Tourisme",
+        "ar": "السياحة",
+        "en": "Tourism"
+      },
+      "specialty": "hotellerie-tourisme"
+    },
+    {
+      "id": "mod-SM",
+      "name": {
+        "fr": "Structure machine",
+        "ar": "Structure machine",
+        "en": "Structure machine"
+      },
+      "specialty": "informatique",
+      "semesters": [
+        "bts-s1"
+      ]
+    },
+    {
+      "id": "mod-mse",
+      "name": {
+        "fr": "Manipuler les systèmes d'exploitation",
+        "ar": "التعامل مع أنظمة التشغيل",
+        "en": "Manipulate operating systems"
+      },
+      "specialty": "informatique",
+      "semesters": [
+        "bts-s1"
+      ]
+    }
   ],
   "documentTypes": [
-    { "id": "cours", "name": { "fr": "Cours", "ar": "درس", "en": "Course" } },
-    { "id": "td", "name": { "fr": "Travaux dirigés", "ar": "أعمال موجهة", "en": "Tutorials" } },
-    { "id": "tp", "name": { "fr": "Travaux pratiques", "ar": "أعمال تطبيقية", "en": "Practical Work" } },
-    { "id": "examen", "name": { "fr": "Examen", "ar": "امتحان", "en": "Exam" } },
-    { "id": "corrige", "name": { "fr": "Corrigé", "ar": "تصحيح", "en": "Correction" } },
-    { "id": "projet", "name": { "fr": "Projet", "ar": "مشروع", "en": "Project" } },
-    { "id": "resume", "name": { "fr": "Résumé / Synthèse", "ar": "ملخص", "en": "Summary" } },
-    { "id": "guide", "name": { "fr": "Guide / Manuel", "ar": "دليل", "en": "Guide" } },
-    { "id": "autre", "name": { "fr": "Autre", "ar": "آخر", "en": "Other" } }
+    {
+      "id": "cours",
+      "name": {
+        "fr": "Cours",
+        "ar": "درس",
+        "en": "Course"
+      }
+    },
+    {
+      "id": "td",
+      "name": {
+        "fr": "Travaux dirigés",
+        "ar": "أعمال موجهة",
+        "en": "Tutorials"
+      }
+    },
+    {
+      "id": "tp",
+      "name": {
+        "fr": "Travaux pratiques",
+        "ar": "أعمال تطبيقية",
+        "en": "Practical Work"
+      }
+    },
+    {
+      "id": "examen",
+      "name": {
+        "fr": "Examen",
+        "ar": "امتحان",
+        "en": "Exam"
+      }
+    },
+    {
+      "id": "corrige",
+      "name": {
+        "fr": "Corrigé",
+        "ar": "تصحيح",
+        "en": "Correction"
+      }
+    },
+    {
+      "id": "projet",
+      "name": {
+        "fr": "Projet",
+        "ar": "مشروع",
+        "en": "Project"
+      }
+    },
+    {
+      "id": "resume",
+      "name": {
+        "fr": "Résumé / Synthèse",
+        "ar": "ملخص",
+        "en": "Summary"
+      }
+    },
+    {
+      "id": "guide",
+      "name": {
+        "fr": "Guide / Manuel",
+        "ar": "دليل",
+        "en": "Guide"
+      }
+    },
+    {
+      "id": "autre",
+      "name": {
+        "fr": "Autre",
+        "ar": "آخر",
+        "en": "Other"
+      }
+    }
   ],
   "institutions": [
-    { "id": "insfp-alger", "name": { "fr": "INSFP Alger", "ar": "INSFP الجزائر", "en": "INSFP Algiers" } },
-    { "id": "insfp-oran", "name": { "fr": "INSFP Oran", "ar": "INSFP وهران", "en": "INSFP Oran" } },
-    { "id": "insfp-constantine", "name": { "fr": "INSFP Constantine", "ar": "INSFP قسنطينة", "en": "INSFP Constantine" } },
-    { "id": "cfpa-alger-centre", "name": { "fr": "CFPA Alger-Centre", "ar": "CFPA الجزائر الوسطى", "en": "CFPA Algiers Center" } }
+    {
+      "id": "insfp-alger",
+      "name": {
+        "fr": "INSFP Alger",
+        "ar": "INSFP الجزائر",
+        "en": "INSFP Algiers"
+      }
+    },
+    {
+      "id": "insfp-oran",
+      "name": {
+        "fr": "INSFP Oran",
+        "ar": "INSFP وهران",
+        "en": "INSFP Oran"
+      }
+    },
+    {
+      "id": "insfp-constantine",
+      "name": {
+        "fr": "INSFP Constantine",
+        "ar": "INSFP قسنطينة",
+        "en": "INSFP Constantine"
+      }
+    },
+    {
+      "id": "cfpa-alger-centre",
+      "name": {
+        "fr": "CFPA Alger-Centre",
+        "ar": "CFPA الجزائر الوسطى",
+        "en": "CFPA Algiers Center"
+      }
+    }
   ],
   "wilayas": [
-    { "code": "01", "name": { "fr": "Adrar", "ar": "أدرار" } },
-    { "code": "16", "name": { "fr": "Alger", "ar": "الجزائر" } },
-    { "code": "31", "name": { "fr": "Oran", "ar": "وهران" } },
-    { "code": "25", "name": { "fr": "Constantine", "ar": "قسنطينة" } }
+    {
+      "code": "01",
+      "name": {
+        "fr": "Adrar",
+        "ar": "أدرار"
+      }
+    },
+    {
+      "code": "16",
+      "name": {
+        "fr": "Alger",
+        "ar": "الجزائر"
+      }
+    },
+    {
+      "code": "31",
+      "name": {
+        "fr": "Oran",
+        "ar": "وهران"
+      }
+    },
+    {
+      "code": "25",
+      "name": {
+        "fr": "Constantine",
+        "ar": "قسنطينة"
+      }
+    }
   ],
   "documents": [
     {
       "id": "doc-001",
-      "title": { "fr": "Cours d'électricité de base — Semestre 1", "ar": "دروس الكهرباء الأساسية — الفصل الأول", "en": "Basic Electricity Course — Semester 1" },
-      "description": { "fr": "Cours complet sur les notions fondamentales d'électricité : loi d'Ohm, lois de Kirchhoff, circuits série et parallèle.", "ar": "دروس كاملة في أساسيات الكهرباء", "en": "Complete course on basic electricity concepts." },
+      "title": {
+        "fr": "Cours d'électricité de base — Semestre 1",
+        "ar": "دروس الكهرباء الأساسية — الفصل الأول",
+        "en": "Basic Electricity Course — Semester 1"
+      },
+      "description": {
+        "fr": "Cours complet sur les notions fondamentales d'électricité : loi d'Ohm, lois de Kirchhoff, circuits série et parallèle.",
+        "ar": "دروس كاملة في أساسيات الكهرباء",
+        "en": "Complete course on basic electricity concepts."
+      },
       "diploma": "cmp",
       "semester": "cmp-s1",
       "specialty": "genie-electrique",
@@ -134,8 +673,16 @@
     },
     {
       "id": "doc-002",
-      "title": { "fr": "TD Comptabilité générale — BT Semestre 2", "ar": "تمارين محاسبة عامة — BT الفصل الثاني", "en": "General Accounting Exercises — BT Semester 2" },
-      "description": { "fr": "Série d'exercices corrigés en comptabilité générale : journal, grand livre, balance.", "ar": "سلسلة تمارين محلولة في المحاسبة العامة", "en": "Series of corrected exercises in general accounting." },
+      "title": {
+        "fr": "TD Comptabilité générale — BT Semestre 2",
+        "ar": "تمارين محاسبة عامة — BT الفصل الثاني",
+        "en": "General Accounting Exercises — BT Semester 2"
+      },
+      "description": {
+        "fr": "Série d'exercices corrigés en comptabilité générale : journal, grand livre, balance.",
+        "ar": "سلسلة تمارين محلولة في المحاسبة العامة",
+        "en": "Series of corrected exercises in general accounting."
+      },
       "diploma": "bt",
       "semester": "bt-s2",
       "specialty": "gestion-administration",
@@ -157,8 +704,16 @@
     },
     {
       "id": "doc-003",
-      "title": { "fr": "TP Réseaux — BTS Informatique S3", "ar": "أعمال تطبيقية شبكات — BTS إعلام آلي ف3", "en": "Networks Practical Work — BTS CS S3" },
-      "description": { "fr": "Travaux pratiques sur la configuration de réseaux : VLAN, routage, DHCP.", "ar": "أعمال تطبيقية في تكوين الشبكات", "en": "Practical work on network configuration." },
+      "title": {
+        "fr": "TP Réseaux — BTS Informatique S3",
+        "ar": "أعمال تطبيقية شبكات — BTS إعلام آلي ف3",
+        "en": "Networks Practical Work — BTS CS S3"
+      },
+      "description": {
+        "fr": "Travaux pratiques sur la configuration de réseaux : VLAN, routage, DHCP.",
+        "ar": "أعمال تطبيقية في تكوين الشبكات",
+        "en": "Practical work on network configuration."
+      },
       "diploma": "bts",
       "semester": "bts-s3",
       "specialty": "informatique",
@@ -180,8 +735,16 @@
     },
     {
       "id": "doc-004",
-      "title": { "fr": "Examen Béton armé — BP Génie Civil S4", "ar": "امتحان خرسانة مسلحة — BP هندسة مدنية ف4", "en": "Reinforced Concrete Exam — BP Civil Eng S4" },
-      "description": { "fr": "Sujet d'examen avec corrigé : calcul de poutres, dalles, fondations.", "ar": "موضوع امتحان مع التصحيح", "en": "Exam subject with correction." },
+      "title": {
+        "fr": "Examen Béton armé — BP Génie Civil S4",
+        "ar": "امتحان خرسانة مسلحة — BP هندسة مدنية ف4",
+        "en": "Reinforced Concrete Exam — BP Civil Eng S4"
+      },
+      "description": {
+        "fr": "Sujet d'examen avec corrigé : calcul de poutres, dalles, fondations.",
+        "ar": "موضوع امتحان مع التصحيح",
+        "en": "Exam subject with correction."
+      },
       "diploma": "bp",
       "semester": "bp-s4",
       "specialty": "genie-civil",
@@ -203,26 +766,594 @@
     },
     {
       "id": "doc-005",
-      "title": { "fr": "Guide Restauration — CMP Hôtellerie S3", "ar": "دليل المطعمة — CMP فندقة وسياحة ف3", "en": "Catering Guide — CMP Hotel & Tourism S3" },
-      "description": { "fr": "Guide pratique des techniques de restauration : dressage, hygiène, menus.", "ar": "دليل عملي لتقنيات المطعمة", "en": "Practical guide to catering techniques." },
+      "title": {
+        "fr": "Guide Restauration — CMP Hôtellerie S3",
+        "ar": "دليل المطعمة — CMP فندقة وسياحة ف3",
+        "en": "Catering Guide — CMP Hotel & Tourism S3"
+      },
       "diploma": "cmp",
       "semester": "cmp-s3",
       "specialty": "hotellerie-tourisme",
       "module": "mod-hot-restau",
       "type": "guide",
-      "year": "2025",
+      "year": 2025,
       "institution": "insfp-alger",
-      "wilaya": "16",
+      "wilaya": null,
+      "description": {
+        "fr": "Guide pratique des techniques de restauration : dressage, hygiène, menus.",
+        "ar": "دليل عملي لتقنيات المطعمة",
+        "en": "Practical guide to catering techniques."
+      },
+      "fileType": "pdf",
       "pages": 60,
       "size": "3.5 MB",
-      "host": "google-drive",
       "previewUrl": "https://drive.google.com/file/d/5e5e5e5e5e5e5e5e5e5e5e5e5e5e/preview",
       "downloadUrl": "https://drive.google.com/uc?export=download&id=5e5e5e5e5e5e5e5e5e5e5e5e5e5e",
+      "host": "drive",
       "source": "INSFP Alger",
       "urlSource": "",
       "urlPdf": "",
-      "downloads": 167,
-      "rating": 4.0
+      "downloads": 0,
+      "rating": 0,
+      "tags": []
+    },
+    {
+      "id": "doc-0006",
+      "title": {
+        "fr": "Leçon 01 - L'Information digitale",
+        "ar": "الدرس 01 - المعلومات الرقمية",
+        "en": "Lesson 01 - Digital Information"
+      },
+      "diploma": "bts",
+      "semester": "bts-s1",
+      "specialty": "informatique",
+      "module": "mod-SM",
+      "type": "cours",
+      "year": 2026,
+      "institution": "insfp-alger",
+      "wilaya": "Alger",
+      "description": {
+        "fr": "L'Information digitale",
+        "ar": "",
+        "en": ""
+      },
+      "fileType": "pdf",
+      "pages": 1,
+      "size": "125.7 KB",
+      "previewUrl": "https://drive.google.com/file/d/1BVSjJJMaztsfQ_ogAnMUyeC694BmqR47/preview",
+      "downloadUrl": "https://drive.google.comuc?export=download&id=1BVSjJJMaztsfQ_ogAnMUyeC694BmqR47",
+      "host": "drive",
+      "source": "INSFP ALGER",
+      "urlSource": "",
+      "urlPdf": "",
+      "downloads": 0,
+      "rating": 0,
+      "tags": []
+    },
+    {
+      "id": "doc-0007",
+      "title": {
+        "fr": "Leçon 02- Unité Centrale de traitement",
+        "ar": "الدرس 02 - وحدة المعالجة المركزية",
+        "en": "Lesson 02- Central Processing Unit"
+      },
+      "diploma": "bts",
+      "semester": "bts-s1",
+      "specialty": "informatique",
+      "module": "mod-SM",
+      "type": "cours",
+      "year": 2026,
+      "institution": "insfp-alger",
+      "wilaya": "Adrar",
+      "description": {
+        "fr": "",
+        "ar": "",
+        "en": ""
+      },
+      "fileType": "pdf",
+      "pages": 1,
+      "size": "125.4 KB",
+      "previewUrl": "https://drive.google.com/file/d/1x02xe4ZXMWSZ2Pn_v7jDp_7TK8c5UsGl/view?usp=drive_link",
+      "downloadUrl": "https://drive.google.com/uc?export=download&id=1x02xe4ZXMWSZ2Pn_v7jDp_7TK8c5UsGl",
+      "host": "drive",
+      "source": "INSFP ALGER",
+      "urlSource": "",
+      "urlPdf": "",
+      "downloads": 0,
+      "rating": 0,
+      "tags": []
+    },
+    {
+      "id": "doc-0008",
+      "title": {
+        "fr": "Chapitre 03 - Stockage et Memoires",
+        "ar": "الفصل 03 - التخزين والذاكرة",
+        "en": "Chapter 03 - Storage and Memory"
+      },
+      "diploma": "bts",
+      "semester": "bts-s1",
+      "specialty": "informatique",
+      "module": "mod-SM",
+      "type": "cours",
+      "year": 2026,
+      "institution": "insfp-alger",
+      "wilaya": "Alger",
+      "description": {
+        "fr": "Stockage et Memoires",
+        "ar": "التخزين والذاكرة",
+        "en": "Storage and Memory"
+      },
+      "fileType": "pdf",
+      "pages": 1,
+      "size": "125.8 KB",
+      "previewUrl": "https://drive.google.com/file/d/1i5sJzHIf3uO1aDL4KJ7s_-jSXqcKqgdO/view?usp=sharing",
+      "downloadUrl": "https://drive.google.com/uc?export=download&id=1i5sJzHIf3uO1aDL4KJ7s_-jSXqcKqgdO",
+      "host": "drive",
+      "source": "INSFP ALGER",
+      "urlSource": "https://drive.google.com/file/d/1i5sJzHIf3uO1aDL4KJ7s_-jSXqcKqgdO/view?usp=sharing",
+      "urlPdf": "https://drive.google.com/file/d/1i5sJzHIf3uO1aDL4KJ7s_-jSXqcKqgdO/view?usp=sharing",
+      "downloads": 0,
+      "rating": 0,
+      "tags": []
+    },
+    {
+      "id": "doc-0009",
+      "title": {
+        "fr": "Chapitre 04 - Représentation des données",
+        "ar": "الفصل 04 - تمثيل البيانات",
+        "en": "Chapter 04 - Data Representation"
+      },
+      "diploma": "bts",
+      "semester": "bts-s1",
+      "specialty": "informatique",
+      "module": "mod-SM",
+      "type": "cours",
+      "year": 2026,
+      "institution": "insfp-alger",
+      "wilaya": null,
+      "description": {
+        "fr": "Représentation des données",
+        "ar": "تمثيل البيانات",
+        "en": "Data representation"
+      },
+      "fileType": "pdf",
+      "pages": 1,
+      "size": "125.5 KB",
+      "previewUrl": "https://drive.google.com/file/d/1tiyC59gKmU_RP9Z-xKB53if0RpvNmPMz/view?usp=sharing",
+      "downloadUrl": "https://drive.google.com/uc?export=download&id=1tiyC59gKmU_RP9Z-xKB53if0RpvNmPMz",
+      "host": "drive",
+      "source": "INSFP ALGER",
+      "urlSource": "https://drive.google.com/file/d/1tiyC59gKmU_RP9Z-xKB53if0RpvNmPMz/view?usp=sharing",
+      "urlPdf": "https://drive.google.com/file/d/1tiyC59gKmU_RP9Z-xKB53if0RpvNmPMz/view?usp=sharing",
+      "downloads": 0,
+      "rating": 0,
+      "tags": []
+    },
+    {
+      "id": "doc-0010",
+      "title": {
+        "fr": "Cours 01 - l’architecture générale d’un ordinateur",
+        "ar": "الدرس 01 - الهندسة المعمارية العامة للكمبيوتر",
+        "en": "Course 01 - the general architecture of a computer"
+      },
+      "diploma": "bts",
+      "semester": "bts-s1",
+      "specialty": "informatique",
+      "module": "mod-mse",
+      "type": "cours",
+      "year": 2026,
+      "institution": "insfp-alger",
+      "wilaya": null,
+      "description": {
+        "fr": "َArchitecture générale d’un ordinateur",
+        "ar": "َالهندسة المعمارية العامة للكمبيوتر",
+        "en": "General َarchitecture of a computer"
+      },
+      "fileType": "pdf",
+      "pages": 1,
+      "size": "125.9 KB",
+      "previewUrl": "https://drive.google.com/file/d/1i_9mtAFRFFpFznYu1QiflP6K9SLGr-_Y/view?usp=drive_link",
+      "downloadUrl": "https://drive.google.com/uc?export=download&id=1i_9mtAFRFFpFznYu1QiflP6K9SLGr-_Y",
+      "host": "drive",
+      "source": "INSFP ALGER",
+      "urlSource": "https://drive.google.com/file/d/1i_9mtAFRFFpFznYu1QiflP6K9SLGr-_Y/view?usp=drive_link",
+      "urlPdf": "https://drive.google.com/file/d/1i_9mtAFRFFpFznYu1QiflP6K9SLGr-_Y/view?usp=drive_link",
+      "downloads": 0,
+      "rating": 0,
+      "tags": []
+    },
+    {
+      "id": "doc-0011",
+      "title": {
+        "fr": "FICHE Travaux dirigés 01 - ARCHITECTURE DES ORDINATEURS",
+        "ar": "ورقة العمل 01 - هندسة الكمبيوتر",
+        "en": "WORKSHEET 01 - COMPUTER ARCHITECTURE"
+      },
+      "diploma": "bts",
+      "semester": "bts-s1",
+      "specialty": "informatique",
+      "module": "mod-mse",
+      "type": "td",
+      "year": 2026,
+      "institution": "insfp-alger",
+      "wilaya": null,
+      "description": {
+        "fr": "FICHE Travaux dirigés 01 - ARCHITECTURE DES ORDINATEURS",
+        "ar": "ورقة العمل 01 - هندسة الكمبيوتر",
+        "en": "WORKSHEET 01 - COMPUTER ARCHITECTURE"
+      },
+      "fileType": "pdf",
+      "pages": 1,
+      "size": "125.9 KB",
+      "previewUrl": "https://drive.google.com/file/d/1-c73oqQTF202NUztH9DMUJuADgCKmRHM/view?usp=sharing",
+      "downloadUrl": "https://drive.google.com/uc?export=download&id=1-c73oqQTF202NUztH9DMUJuADgCKmRHM",
+      "host": "drive",
+      "source": "INSFP ALGER",
+      "urlSource": "https://drive.google.com/file/d/1-c73oqQTF202NUztH9DMUJuADgCKmRHM/view?usp=sharing",
+      "urlPdf": "https://drive.google.com/file/d/1-c73oqQTF202NUztH9DMUJuADgCKmRHM/view?usp=sharing",
+      "downloads": 0,
+      "rating": 0,
+      "tags": []
+    },
+    {
+      "id": "doc-0012",
+      "title": {
+        "fr": "Chapitre 02 - Explorer windows",
+        "ar": "الفصل 02 - استكشاف النوافذ",
+        "en": "Chapter 02 - Explore windows"
+      },
+      "diploma": "bts",
+      "semester": "bts-s1",
+      "specialty": "informatique",
+      "module": "mod-mse",
+      "type": "cours",
+      "year": 2026,
+      "institution": "insfp-alger",
+      "wilaya": null,
+      "description": {
+        "fr": "Chapitre 02 - Explorer windows",
+        "ar": "الفصل 02 - استكشاف النوافذ",
+        "en": "Chapter 02 - Explore windows"
+      },
+      "fileType": "pdf",
+      "pages": 1,
+      "size": "125.7 KB",
+      "previewUrl": "https://drive.google.com/file/d/1GarQWDSPfcLS2ss0IqjwrVnUehB9tMW6/view?usp=sharing",
+      "downloadUrl": "https://drive.google.com/uc?export=download&id=1GarQWDSPfcLS2ss0IqjwrVnUehB9tMW6",
+      "host": "drive",
+      "source": "INSFP ALGER",
+      "urlSource": "https://drive.google.com/file/d/1GarQWDSPfcLS2ss0IqjwrVnUehB9tMW6/view?usp=sharing",
+      "urlPdf": "https://drive.google.com/file/d/1GarQWDSPfcLS2ss0IqjwrVnUehB9tMW6/view?usp=sharing",
+      "downloads": 0,
+      "rating": 0,
+      "tags": []
+    },
+    {
+      "id": "doc-0013",
+      "title": {
+        "fr": "FICHE Travaux dirigés 02 - Explorer windows",
+        "ar": "ورقة العمل 02 - استكشاف ويندوز",
+        "en": "WORKSHEET 02 - Explore windows"
+      },
+      "diploma": "bts",
+      "semester": "bts-s1",
+      "specialty": "informatique",
+      "module": "mod-mse",
+      "type": "cours",
+      "year": 2026,
+      "institution": "insfp-alger",
+      "wilaya": "Alger",
+      "description": {
+        "fr": "FICHE Travaux dirigés 02 - Explorer windows",
+        "ar": "ورقة العمل 02 - استكشاف ويندوز",
+        "en": "WORKSHEET 02 - Explore windows"
+      },
+      "fileType": "pdf",
+      "pages": 1,
+      "size": "125.6 KB",
+      "previewUrl": "https://drive.google.com/file/d/1uW0cBRAlKJnthOY3KDmLSCME0NqPkmuX/view?usp=sharing",
+      "downloadUrl": "https://drive.google.com/uc?export=download&id=1uW0cBRAlKJnthOY3KDmLSCME0NqPkmuX",
+      "host": "drive",
+      "source": "INSFP ALGER",
+      "urlSource": "https://drive.google.com/file/d/1uW0cBRAlKJnthOY3KDmLSCME0NqPkmuX/view?usp=sharing",
+      "urlPdf": "https://drive.google.com/file/d/1uW0cBRAlKJnthOY3KDmLSCME0NqPkmuX/view?usp=sharing",
+      "downloads": 0,
+      "rating": 0,
+      "tags": []
+    },
+    {
+      "id": "doc-0014",
+      "title": {
+        "fr": "Chapitre 03 - Windows Server",
+        "ar": "الفصل 03 - خادم ويندوز",
+        "en": "Chapter 03 - Windows Server"
+      },
+      "diploma": "bts",
+      "semester": "bts-s1",
+      "specialty": "informatique",
+      "module": "mod-mse",
+      "type": "cours",
+      "year": 2026,
+      "institution": "insfp-alger",
+      "wilaya": null,
+      "description": {
+        "fr": "Chapitre 03 - Windows Server",
+        "ar": "الفصل 03 - خادم ويندوز",
+        "en": "Chapter 03 - Windows Server"
+      },
+      "fileType": "pdf",
+      "pages": 1,
+      "size": "125.7 KB",
+      "previewUrl": "https://drive.google.com/file/d/1Oxk9cncBXrUd0wI392vMI5m_smUsudhm/view?usp=sharing",
+      "downloadUrl": "https://drive.google.com/uc?export=download&id=1Oxk9cncBXrUd0wI392vMI5m_smUsudhm",
+      "host": "drive",
+      "source": "INSFP ALGER",
+      "urlSource": "https://drive.google.com/file/d/1Oxk9cncBXrUd0wI392vMI5m_smUsudhm/view?usp=sharing",
+      "urlPdf": "https://drive.google.com/file/d/1Oxk9cncBXrUd0wI392vMI5m_smUsudhm/view?usp=sharing",
+      "downloads": 0,
+      "rating": 0,
+      "tags": []
+    },
+    {
+      "id": "doc-0015",
+      "title": {
+        "fr": "Chapitre 04 - Système Linux",
+        "ar": "الفصل 04 - نظام لينكس",
+        "en": "Chapter 04 - Linux System"
+      },
+      "diploma": "bts",
+      "semester": "bts-s1",
+      "specialty": "informatique",
+      "module": "mod-mse",
+      "type": "cours",
+      "year": 2026,
+      "institution": "insfp-alger",
+      "wilaya": "Alger",
+      "description": {
+        "fr": "Chapitre 04 - Système Linux",
+        "ar": "الفصل 04 - نظام لينكس",
+        "en": "Chapter 04 - Linux System"
+      },
+      "fileType": "pdf",
+      "pages": 1,
+      "size": "125.5 KB",
+      "previewUrl": "https://drive.google.com/file/d/1YWWi4e_H-lR1D_9Q15o0hrz7l_nUoI5n/view?usp=sharing",
+      "downloadUrl": "https://drive.google.com/uc?export=download&id=1YWWi4e_H-lR1D_9Q15o0hrz7l_nUoI5n",
+      "host": "drive",
+      "source": "INSFP ALGER",
+      "urlSource": "https://drive.google.com/file/d/1YWWi4e_H-lR1D_9Q15o0hrz7l_nUoI5n/view?usp=sharing",
+      "urlPdf": "https://drive.google.com/file/d/1YWWi4e_H-lR1D_9Q15o0hrz7l_nUoI5n/view?usp=sharing",
+      "downloads": 0,
+      "rating": 0,
+      "tags": []
+    },
+    {
+      "id": "doc-0016",
+      "title": {
+        "fr": "Chap4 FICHE TD 05",
+        "ar": "الفصل 4 ورقة TD 05",
+        "en": "Chap4 SHEET TD 05"
+      },
+      "diploma": "bts",
+      "semester": "bts-s1",
+      "specialty": "informatique",
+      "module": "mod-SM",
+      "type": "td",
+      "year": 2026,
+      "institution": "insfp-alger",
+      "wilaya": null,
+      "description": {
+        "fr": "Chap4 FICHE TD 05",
+        "ar": "",
+        "en": ""
+      },
+      "fileType": "pdf",
+      "pages": 1,
+      "size": "0 KB",
+      "previewUrl": "https://drive.google.com/file/d/1PiVpSCTUMcI_lhd10CsEaEH2p5byOcfU/preview",
+      "downloadUrl": "https://drive.google.com/uc?export=download&id=1PiVpSCTUMcI_lhd10CsEaEH2p5byOcfU",
+      "host": "drive",
+      "source": "INSFP ALGER",
+      "urlSource": "",
+      "urlPdf": "",
+      "downloads": 0,
+      "rating": 0,
+      "tags": []
+    },
+    {
+      "id": "doc-0017",
+      "title": {
+        "fr": "SERIE EXERCICES CONVERSION ENTRE BASE 2 8 16",
+        "ar": "تحويل سلسلة التمرين بين الأساس 2 8 16",
+        "en": "EXERCISE SERIES CONVERSION BETWEEN BASE 2 8 16"
+      },
+      "diploma": "bts",
+      "semester": "bts-s1",
+      "specialty": "informatique",
+      "module": "mod-SM",
+      "type": "td",
+      "year": 2026,
+      "institution": "insfp-alger",
+      "wilaya": null,
+      "description": {
+        "fr": "SERIE EXERCICES CONVERSION ENTRE BASE 2 8 16",
+        "ar": "",
+        "en": ""
+      },
+      "fileType": "pdf",
+      "pages": 1,
+      "size": "0 KB",
+      "previewUrl": "https://drive.google.com/file/d/1u_cdl-E-K2Nnwe_0iGqo-Z7xFOFxidqO/preview",
+      "downloadUrl": "https://drive.google.com/uc?export=download&id=1u_cdl-E-K2Nnwe_0iGqo-Z7xFOFxidqO",
+      "host": "drive",
+      "source": "INSFP ALGER",
+      "urlSource": "",
+      "urlPdf": "",
+      "downloads": 0,
+      "rating": 0,
+      "tags": []
+    },
+    {
+      "id": "doc-0018",
+      "title": {
+        "fr": "Serie 01 L'Information digitale",
+        "ar": "السلسلة 01 المعلومات الرقمية",
+        "en": "Series 01 Digital Information"
+      },
+      "diploma": "bts",
+      "semester": "bts-s1",
+      "specialty": "informatique",
+      "module": "mod-SM",
+      "type": "td",
+      "year": 2026,
+      "institution": "insfp-alger",
+      "wilaya": "Alger",
+      "description": {
+        "fr": "Serie 01 L'Information digitale",
+        "ar": "السلسلة 01 المعلومات الرقمية",
+        "en": "Series 01 Digital Information"
+      },
+      "fileType": "pdf",
+      "pages": 1,
+      "size": "0 KB",
+      "previewUrl": "https://drive.google.com/file/d/1UxuVvgl_OEAUADBQXqvinDh-FcAX4XeZ/preview",
+      "downloadUrl": "https://drive.google.com/uc?export=download&id=1UxuVvgl_OEAUADBQXqvinDh-FcAX4XeZ",
+      "host": "drive",
+      "source": "INSFP ALGER",
+      "urlSource": "",
+      "urlPdf": "",
+      "downloads": 0,
+      "rating": 0,
+      "tags": []
+    },
+    {
+      "id": "doc-0019",
+      "title": {
+        "fr": "Serie 02 systeme numerations",
+        "ar": "نظام التعداد السلسلة 02",
+        "en": "Series 02 numbering system"
+      },
+      "diploma": "bts",
+      "semester": "bts-s1",
+      "specialty": "informatique",
+      "module": "mod-SM",
+      "type": "td",
+      "year": 2026,
+      "institution": "insfp-alger",
+      "wilaya": "Alger",
+      "description": {
+        "fr": "Serie 02 systeme numerations",
+        "ar": "نظام التعداد السلسلة  02",
+        "en": "Series 02 numbering system"
+      },
+      "fileType": "pdf",
+      "pages": 1,
+      "size": "0 KB",
+      "previewUrl": "https://drive.google.com/file/d/1K61KyzpKcraxy8K46GkTu1UpmLGoeIk4/preview",
+      "downloadUrl": "https://drive.google.com/uc?export=download&id=1K61KyzpKcraxy8K46GkTu1UpmLGoeIk4",
+      "host": "drive",
+      "source": "INSFP ALGER",
+      "urlSource": "",
+      "urlPdf": "",
+      "downloads": 0,
+      "rating": 0,
+      "tags": []
+    },
+    {
+      "id": "doc-0020",
+      "title": {
+        "fr": "serie 02 systeme numerations - Partie 02",
+        "ar": "سلسلة 02 نظام الترقيم - الجزء 02",
+        "en": "series 02 numbering system - Part 02"
+      },
+      "diploma": "bts",
+      "semester": "bts-s1",
+      "specialty": "informatique",
+      "module": "mod-SM",
+      "type": "td",
+      "year": 2026,
+      "institution": "insfp-alger",
+      "wilaya": "Alger",
+      "description": {
+        "fr": "serie 02 systeme numerations - Partie 02",
+        "ar": "سلسلة 02 نظام الترقيم - الجزء 02",
+        "en": "series 02 numbering system - Part 02"
+      },
+      "fileType": "pdf",
+      "pages": 1,
+      "size": "0 KB",
+      "previewUrl": "https://drive.google.com/file/d/1umihPVK1WzHgACuLVmvPpZUyiy3mCeCi/preview",
+      "downloadUrl": "https://drive.google.com/uc?export=download&id=1umihPVK1WzHgACuLVmvPpZUyiy3mCeCi",
+      "host": "drive",
+      "source": "INSFP ALGER",
+      "urlSource": "",
+      "urlPdf": "",
+      "downloads": 0,
+      "rating": 0,
+      "tags": []
     }
-  ]
+  ],
+  "hidden": {
+    "docIds": [
+      "doc-005",
+      "doc-004",
+      "doc-003",
+      "doc-002",
+      "doc-001"
+    ],
+    "diplomaIds": [
+      "cmp",
+      "bt",
+      "bp"
+    ],
+    "semesterIds": [
+      "bts-s5",
+      "bts-s4",
+      "bts-s3",
+      "bts-s2"
+    ],
+    "moduleIds": [
+      "mod-info-reseau",
+      "mod-info-base",
+      "mod-info-web",
+      "mod-info-algo",
+      "mod-elec-base",
+      "mod-elec-install",
+      "mod-elec-auto",
+      "mod-elec-mesure",
+      "mod-civil-materiaux",
+      "mod-civil-topo",
+      "mod-civil-beton",
+      "mod-civil-plan",
+      "mod-admin-compta",
+      "mod-admin-droit",
+      "mod-admin-rh",
+      "mod-admin-com",
+      "mod-admin-fiscal",
+      "mod-hot-restau",
+      "mod-hot-heberg",
+      "mod-hot-cuisine",
+      "mod-hot-accueil",
+      "mod-hot-tourisme"
+    ],
+    "specialtyIds": [
+      "genie-civil",
+      "gestion-administration",
+      "hotellerie-tourisme",
+      "aaa",
+      "ssssss",
+      "genie-electrique"
+    ]
+  },
+  "githubSync": {
+    "encryptedPAT": {
+      "iv": "F5GFOhumuu+Gy0eR",
+      "data": "V9OQQQFN+7aAT3S2pXqEvOq6FxxWe9luI+O0tXS8JcqZ0sEkEOnjjNqpgwgEeiVApYRoGSl8DcQ="
+    },
+    "patKey": "pGZ9Tm+zW6tV+v64hQXKXIAWc4aJWzG4b4NEArhcwx8=",
+    "repo": "droidapk1002-beep/fp-smart-assets",
+    "branch": "main",
+    "path": "repo/data/db.json",
+    "autoPush": true
+  }
 }
