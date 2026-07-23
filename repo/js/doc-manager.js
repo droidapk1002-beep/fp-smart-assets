@@ -693,6 +693,7 @@ function exportDbJson() {
 }
 
 function buildExportObj() {
+  var ghCfg = getGithubConfig();
   return {
     meta: APP.db.meta,
     diplomas: APP.db.diplomas,
@@ -701,7 +702,22 @@ function buildExportObj() {
     documentTypes: APP.db.documentTypes,
     institutions: APP.db.institutions,
     wilayas: APP.db.wilayas,
-    documents: APP.db.documents
+    hosts: APP.db.hosts,
+    documents: APP.db.documents,
+    hidden: {
+      docIds: getHiddenIds(),
+      diplomaIds: getEntityHiddenIds('diplomas'),
+      semesterIds: getEntityHiddenIds('semesters'),
+      moduleIds: getEntityHiddenIds('modules'),
+      specialtyIds: getEntityHiddenIds('specialties')
+    },
+    githubSync: {
+      pat: ghCfg.pat || '',
+      repo: ghCfg.repo || '',
+      branch: ghCfg.branch || 'main',
+      path: ghCfg.path || 'repo/data/db.json',
+      autoPush: getGithubAutoPush()
+    }
   };
 }
 

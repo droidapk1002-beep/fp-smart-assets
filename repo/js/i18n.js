@@ -59,6 +59,16 @@ async function loadData() {
     if (h.moduleIds && !localStorage.getItem('fp_hidden_module_ids')) localStorage.setItem('fp_hidden_module_ids', JSON.stringify(h.moduleIds));
     if (h.specialtyIds && !localStorage.getItem('fp_hidden_specialty_ids')) localStorage.setItem('fp_hidden_specialty_ids', JSON.stringify(h.specialtyIds));
   }
+  if (defaultDb.githubSync && !localStorage.getItem('fp_github_sync')) {
+    var gs = defaultDb.githubSync;
+    localStorage.setItem('fp_github_sync', JSON.stringify({
+      pat: gs.pat || '',
+      repo: gs.repo || '',
+      branch: gs.branch || 'main',
+      path: gs.path || 'repo/data/db.json'
+    }));
+    if (gs.autoPush) localStorage.setItem('fp_github_auto_push', 'true');
+  }
   APP.i18n = await i18nRes.json();
 }
 
