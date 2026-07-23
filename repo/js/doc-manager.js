@@ -213,7 +213,7 @@ function renderAdminDocTable() {
     '</div></td></tr>';
 
   // Bulk edit panel
-  html += '<tr id="bulk-edit-panel" style="display:none;"><td colspan="10" style="padding:0.75rem 1rem;background:var(--surface-alt,#f0f4ff);border-bottom:2px solid var(--kraft-line);"><div style="display:flex;gap:var(--space-3);align-items:flex-end;flex-wrap:wrap;"><div style="font-weight:700;font-size:var(--fs-sm);width:100%;">✏️ Modifier la sélection — ne coche que les champs à changer :</div><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-diploma"> Diplôme <select id="bulk-val-diploma" disabled style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-semester"> Semestre <select id="bulk-val-semester" disabled style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-specialty"> Spécialité <select id="bulk-val-specialty" disabled style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-type"> Type <select id="bulk-val-type" disabled style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-year"> Année <input type="number" id="bulk-val-year" disabled placeholder="2025" min="2000" max="2099" style="display:block;margin-top:2px;width:90px;"></label><button class="btn btn-primary btn-xs" id="bulk-apply-btn">✅ Appliquer</button><button class="btn btn-ghost btn-xs" id="bulk-cancel-btn">✖ Annuler</button><span id="bulk-confirm" style="color:var(--green);font-size:var(--fs-xs);font-weight:600;"></span></div></td></tr>';
+  html += '<tr id="bulk-edit-panel" style="display:none;"><td colspan="10" style="padding:0.75rem 1rem;background:var(--surface-alt,#f0f4ff);border-bottom:2px solid var(--kraft-line);"><div style="display:flex;gap:var(--space-3);align-items:flex-end;flex-wrap:wrap;"><div style="font-weight:700;font-size:var(--fs-sm);width:100%;">✏️ Modifier la sélection — ne coche que les champs à changer :</div><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-diploma"> Diplôme <select id="bulk-val-diploma" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-semester"> Semestre <select id="bulk-val-semester" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-specialty"> Spécialité <select id="bulk-val-specialty" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-module"> Module <select id="bulk-val-module" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-type"> Type <select id="bulk-val-type" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-year"> Année <input type="number" id="bulk-val-year" disabled="disabled" placeholder="2025" min="2000" max="2099" style="display:block;margin-top:2px;width:90px;"></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-institution"> Établissement <select id="bulk-val-institution" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-wilaya"> Wilaya <select id="bulk-val-wilaya" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-host"> Hébergement <select id="bulk-val-host" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-source"> Source <input type="text" id="bulk-val-source" disabled="disabled" placeholder="dzexams…" style="display:block;margin-top:2px;width:120px;"></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-url-source"> URL Source <input type="url" id="bulk-val-url-source" disabled="disabled" placeholder="https://…" style="display:block;margin-top:2px;width:180px;"></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-url-pdf"> URL PDF <input type="url" id="bulk-val-url-pdf" disabled="disabled" placeholder="https://…" style="display:block;margin-top:2px;width:180px;"></label><button class="btn btn-primary btn-xs" id="bulk-apply-btn">✅ Appliquer</button><button class="btn btn-ghost btn-xs" id="bulk-cancel-btn">✖ Annuler</button><span id="bulk-confirm" style="color:var(--green);font-size:var(--fs-xs);font-weight:600;"></span></div></td></tr>';
 
   // Pending section
   if (pendingDocs.length) {
@@ -346,8 +346,15 @@ function wireTableEvents(tbody) {
     const bulkDiplomas = document.getElementById('bulk-val-diploma');
     const bulkSemesters = document.getElementById('bulk-val-semester');
     const bulkSpecialties = document.getElementById('bulk-val-specialty');
+    const bulkModules = document.getElementById('bulk-val-module');
     const bulkTypes = document.getElementById('bulk-val-type');
     const bulkYear = document.getElementById('bulk-val-year');
+    const bulkInstitutions = document.getElementById('bulk-val-institution');
+    const bulkWilayas = document.getElementById('bulk-val-wilaya');
+    const bulkHosts = document.getElementById('bulk-val-host');
+    const bulkSource = document.getElementById('bulk-val-source');
+    const bulkUrlSource = document.getElementById('bulk-val-url-source');
+    const bulkUrlPdf = document.getElementById('bulk-val-url-pdf');
 
     if (bulkDiplomas) bulkDiplomas.innerHTML = '<option value="">— choisir —</option>' + (APP.db.diplomas || []).map(d => '<option value="' + escapeAttr(d.id) + '">' + escapeHTML(localized(d.name)) + '</option>').join('');
     if (bulkSemesters) {
@@ -360,12 +367,19 @@ function wireTableEvents(tbody) {
       bulkSemesters.innerHTML = '<option value="">— choisir —</option>' + semOpts;
     }
     if (bulkSpecialties) bulkSpecialties.innerHTML = '<option value="">— choisir —</option>' + (APP.db.specialties || []).map(s => '<option value="' + escapeAttr(s.id) + '">' + escapeHTML(localized(s.name)) + '</option>').join('');
+    if (bulkModules) bulkModules.innerHTML = '<option value="">— choisir —</option>' + (APP.db.modules || []).map(m => '<option value="' + escapeAttr(m.id) + '">' + escapeHTML(localized(m.name)) + '</option>').join('');
     if (bulkTypes) bulkTypes.innerHTML = '<option value="">— choisir —</option>' + (APP.db.documentTypes || []).map(ty => '<option value="' + escapeAttr(ty.id) + '">' + escapeHTML(localized(ty.name)) + '</option>').join('');
+    if (bulkInstitutions) bulkInstitutions.innerHTML = '<option value="">— choisir —</option>' + (APP.db.institutions || []).map(i => '<option value="' + escapeAttr(i.id) + '">' + escapeHTML(localized(i.name)) + '</option>').join('');
+    if (bulkWilayas) {
+      const wOpts = (APP.db.wilayas || []).map(w => '<option value="' + escapeAttr(w.code || w.id) + '">' + escapeAttr(w.code || w.id) + ' — ' + escapeHTML(localized(w.name)) + '</option>').join('');
+      bulkWilayas.innerHTML = '<option value="">— choisir —</option>' + wOpts;
+    }
+    if (bulkHosts) bulkHosts.innerHTML = '<option value="">— choisir —</option>' + (APP.db.hosts || []).map(h => '<option value="' + escapeAttr(h.id) + '">' + escapeHTML(localized(h.name)) + '</option>').join('');
 
-    ['bulk-chk-diploma','bulk-chk-semester','bulk-chk-specialty','bulk-chk-type','bulk-chk-year'].forEach(cId => {
+    ['bulk-chk-diploma','bulk-chk-semester','bulk-chk-specialty','bulk-chk-module','bulk-chk-type','bulk-chk-year','bulk-chk-institution','bulk-chk-wilaya','bulk-chk-host','bulk-chk-source','bulk-chk-url-source','bulk-chk-url-pdf'].forEach(cId => {
       const c = document.getElementById(cId);
       if (c) c.addEventListener('change', () => {
-        const ctrl = c.parentElement.querySelector('select, input[type="number"]');
+        const ctrl = c.parentElement.querySelector('select, input[type="number"], input[type="text"], input[type="url"]');
         if (ctrl) ctrl.disabled = !c.checked;
       });
     });
@@ -387,8 +401,15 @@ function wireTableEvents(tbody) {
       if (document.getElementById('bulk-chk-diploma')?.checked) fields.diploma = bulkDiplomas.value;
       if (document.getElementById('bulk-chk-semester')?.checked) fields.semester = bulkSemesters.value || null;
       if (document.getElementById('bulk-chk-specialty')?.checked) fields.specialty = bulkSpecialties.value || null;
+      if (document.getElementById('bulk-chk-module')?.checked) fields.module = bulkModules.value || null;
       if (document.getElementById('bulk-chk-type')?.checked) fields.type = bulkTypes.value;
       if (document.getElementById('bulk-chk-year')?.checked && bulkYear.value) fields.year = parseInt(bulkYear.value, 10);
+      if (document.getElementById('bulk-chk-institution')?.checked) fields.institution = bulkInstitutions.value || null;
+      if (document.getElementById('bulk-chk-wilaya')?.checked) fields.wilaya = bulkWilayas.value || null;
+      if (document.getElementById('bulk-chk-host')?.checked) fields.host = bulkHosts.value || null;
+      if (document.getElementById('bulk-chk-source')?.checked && bulkSource.value.trim()) fields.source = bulkSource.value.trim();
+      if (document.getElementById('bulk-chk-url-source')?.checked && bulkUrlSource.value.trim()) fields.urlSource = bulkUrlSource.value.trim();
+      if (document.getElementById('bulk-chk-url-pdf')?.checked && bulkUrlPdf.value.trim()) fields.urlPdf = bulkUrlPdf.value.trim();
       if (!Object.keys(fields).length) { showToast('Coche au moins un champ'); return; }
       let count = 0;
       (APP.db.documents || []).forEach(doc => {
