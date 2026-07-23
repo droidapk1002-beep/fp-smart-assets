@@ -1962,6 +1962,47 @@ html[dir="rtl"] .admin-doc-table th { text-align: right; }
 /* Forcer le reset body (Blogger injecte margin:8px par défaut) */
 body { margin: 0 !important; padding: 0 !important; }
 
+/* ---- Responsive Admin Panel ---- */
+@media (max-width: 900px) {
+  .admin-tab-panel { padding: var(--space-3) !important; }
+  .admin-doc-table { font-size: var(--fs-xs); }
+  .admin-doc-table th, .admin-doc-table td { padding: var(--space-2) !important; }
+  .admin-doc-table .doc-table-actions { flex-direction: column; gap: 4px !important; }
+  .admin-doc-table .doc-table-actions button { font-size: 10px; padding: 3px 6px !important; }
+}
+@media (max-width: 700px) {
+  .form-row-cols { grid-template-columns: 1fr !important; }
+  .form-row-cols-3 { grid-template-columns: 1fr !important; }
+  .admin-sub-tabs { flex-wrap: wrap; gap: 4px; }
+  .admin-sub-tab { font-size: var(--fs-xs); padding: var(--space-1) var(--space-2) !important; }
+  .admin-section { padding: var(--space-3) !important; }
+  .admin-doc-table .doc-table-title { max-width: 140px; }
+}
+@media (max-width: 480px) {
+  .admin-tab-bar { flex-wrap: wrap; gap: 4px; }
+  .admin-tab-bar button { font-size: var(--fs-xs); padding: var(--space-2) var(--space-3) !important; flex: 1 1 45%; }
+  .doc-form-actions { flex-direction: column; gap: var(--space-2); }
+  .doc-form-actions button { width: 100%; }
+  .admin-doc-table { display: block; overflow-x: auto; white-space: nowrap; }
+  .db-backup-item { flex-direction: column; align-items: flex-start; }
+}
+
+/* ---- Responsive Front-end ---- */
+@media (max-width: 700px) {
+  .hero-section h1 { font-size: var(--fs-xl) !important; }
+  .hero-section p { font-size: var(--fs-sm) !important; }
+  .dossier-grid { grid-template-columns: 1fr !important; gap: var(--space-3) !important; }
+  .recent-grid { grid-template-columns: 1fr !important; }
+  .search-bar input { font-size: var(--fs-sm); }
+  .filter-bar { flex-direction: column; gap: var(--space-2); }
+  .filter-bar select { width: 100%; }
+  .stat-card { padding: var(--space-3) !important; }
+  .modal-box { width: 95vw !important; max-height: 90vh !important; margin: var(--space-2) !important; }
+  .modal-info { padding: var(--space-3) !important; }
+  .conv-sidebar { width: 100% !important; position: static !important; }
+  .footer-content { flex-direction: column; text-align: center; gap: var(--space-3); }
+}
+
 ]]></b:skin>
 </head>
 <body>
