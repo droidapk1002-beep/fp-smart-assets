@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>window.addEventListener('pageshow',function(e){if(e.persisted)location.reload();});</script>
+<title>Administration — FP-SMART</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/assistant-admin.css">
+</head>
+<body>
+<div id="header-root"></div>
+
+<main id="main" class="admin-page">
+
+  <div class="admin-lock" id="admin-lock-screen">
+    <div id="lock-icon" style="font-size:48px;margin-bottom:var(--space-3);">🔒</div>
+    <h2 data-i18n="admin.title" style="font-size:var(--fs-lg);"></h2>
+    <p style="color:var(--ink-soft);font-size:var(--fs-sm);margin-top:0.5rem;" data-i18n="admin.subtitle"></p>
+    <form class="admin-lock-form" id="admin-setup-form" style="display:none;">
+      <input type="password" id="admin-setup-password" data-i18n-placeholder="admin.setupPassword" required>
+      <button class="btn btn-primary" type="submit" data-i18n="admin.setPassword"></button>
+    </form>
+    <form class="admin-lock-form" id="admin-login-form">
+      <input type="password" id="admin-password-input" data-i18n-placeholder="admin.passwordPlaceholder" required>
+      <div class="admin-error" id="admin-error"></div>
+      <button class="btn btn-primary" type="submit" data-i18n="admin.login"></button>
+    </form>
+  </div>
+
+  <div id="admin-content" class="hidden">
+    <div class="admin-toprow">
+      <div>
+        <div class="eyebrow" data-i18n="nav.admin"></div>
+        <h2 data-i18n="admin.title" style="font-size:var(--fs-xl);"></h2>
+      </div>
+      <button class="btn btn-secondary btn-sm" id="admin-logout-btn" data-i18n="admin.logout"></button>
+    </div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab-btn active" data-tab="docs" data-i18n="admin.tabDocs"></button>
+      <button class="admin-tab-btn" data-tab="structure" data-i18n="admin.tabDiplomas"></button>
+      <button class="admin-tab-btn" data-tab="keys" data-i18n="admin.tabKeys"></button>
+      <button class="admin-tab-btn" data-tab="password" data-i18n="admin.tabPassword"></button>
+    </div>
+
+    <!-- ============== DOCUMENTS TAB ============== -->
+    <div class="admin-tab-panel" id="tab-panel-docs">
+      <div class="admin-sub-tabs">
+        <button class="admin-sub-tab active" data-subtab="docs-add"><span data-i18n="admin.addDoc">➕ Ajouter</span></button>
+        <button class="admin-sub-tab" data-subtab="docs-list"><span data-i18n="admin.docManagerTitle">📋 Documents</span></button>
+        <button class="admin-sub-tab" data-subtab="docs-import"><span data-i18n="admin.tabImport">📥 Import</span></button>
+        <button class="admin-sub-tab" data-subtab="docs-db"><span data-i18n="admin.tabDb">💾 Base de données</span></button>
+      </div>
+
+      <div class="admin-sub-panel" id="sub-panel-docs-add">
+        <div class="admin-section" id="doc-form-section">
+          <h3><span id="doc-form-title-heading" data-i18n="admin.addDoc"></span></h3>
+          <form id="doc-form">
+            <div class="form-row-cols-3">
+              <div class="form-row">
+                <label data-i18n="admin.titleFr"></label>
+                <input type="text" id="doc-form-title-fr" required>
+              </div>
+              <div class="form-row">
+                <label data-i18n="admin.titleAr"></label>
+                <input type="text" id="doc-form-title-ar" dir="rtl">
+              </div>
+              <div class="form-row">
+                <label data-i18n="admin.titleEn"></label>
+                <input type="text" id="doc-form-title-en">
+              </div>
+            </div>
+            <div class="form-row-cols-3">
+              <div class="form-row">
+                <label data-i18n="admin.descFr"></label>
+                <textarea id="doc-form-desc-fr" rows="2"></textarea>
+              </div>
+              <div class="form-row">
+                <label data-i18n="admin.descAr"></label>
+                <textarea id="doc-form-desc-ar" rows="2" dir="rtl"></textarea>
+              </div>
+              <div class="form-row">
+                <label data-i18n="admin.descEn"></label>
+                <textarea id="doc-form-desc-en" rows="2"></textarea>
+              </div>
+            </div>
+            <div class="form-row-cols">
+              <div class="form-row">
+                <label data-i18n="admin.diploma"></label>
+                <select id="doc-form-diploma"></select>
+              </div>
+              <div class="form-row">
+                <label data-i18n="admin.semester"></label>
+                <select id="doc-form-semester"></select>
+              </div>
+            </div>
+            <div class="form-row-cols">
+              <div class="form-row">
+                <label data-i18n="admin.specialty"></label>
+                <select id="doc-form-specialty"></select>
+              </div>
+              <div class="form-row">
+                <label data-i18n="admin.module"></label>
+                <select id="doc-form-module"></select>
+              </div>
+            </div>
+            <div class="form-row-cols">
+              <div class="form-row">
+                <label data-i18n="admin.type"></label>
+                <select id="doc-form-type" required></select>
+              </div>
+              <div class="form-row">
+                <label data-i18n="admin.year"></label>
+                <input type="number" id="doc-form-year" min="2000" max="2100">
+              </div>
+            </div>
+            <div class="form-row-cols">
+              <div class="form-row">
+                <label data-i18n="admin.institution">Établissement</label>
+                <select id="doc-form-institution"></select>
+              </div>
+              <div class="form-row">
+                <label data-i18n="admin.wilaya"></label>
+                <select id="doc-form-wilaya"></select>
+              </div>
+            </div>
+            <div class="form-row-cols">
+              <div class="form-row">
+                <label data-i18n="admin.pages"></label>
+                <input type="number" id="doc-form-pages" min="1">
+              </div>
+              <div class="form-row">
+                <label data-i18n="admin.size"></label>
+                <input type="text" id="doc-form-size" placeholder="1.2 MB">
+              </div>
+              <div class="form-row">
+                <label data-i18n="admin.host"></label>
+                <select id="doc-form-host"></select>
+              </div>
+            </div>
+            <div class="form-row">
+              <label data-i18n="admin.previewUrl"></label>
+              <input type="url" id="doc-form-preview-url" required placeholder="https://drive.google.com/file/d/ID/preview">
+              <span class="export-hint" data-i18n="admin.previewUrlHint"></span>
+            </div>
+            <div class="form-row">
+              <label data-i18n="admin.downloadUrl"></label>
+              <input type="url" id="doc-form-download-url" required placeholder="https://drive.google.com/uc?export=download&id=ID">
+              <span class="export-hint" data-i18n="admin.downloadUrlHint"></span>
+            </div>
+            <div class="form-row-cols">
+              <div class="form-row">
+                <label data-i18n="admin.source"></label>
+                <input type="text" id="doc-form-source" placeholder="dzexams, eddirasa…">
+              </div>
+              <div class="form-row">
+                <label data-i18n="admin.urlSource"></label>
+                <input type="url" id="doc-form-url-source" placeholder="https://...">
+              </div>
+            </div>
+            <div class="form-row">
+              <label data-i18n="admin.urlPdf"></label>
+              <input type="url" id="doc-form-url-pdf" placeholder="https://...">
+            </div>
+            <div class="doc-form-actions">
+              <button class="btn btn-primary" type="submit" id="doc-form-submit-btn" data-i18n="admin.save"></button>
+              <button class="btn btn-secondary" type="button" id="doc-form-cancel-btn" data-i18n="admin.cancel"></button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="admin-sub-panel hidden" id="sub-panel-docs-list">
+        <div class="admin-section">
+          <div class="admin-doc-search-row">
+            <h3 style="margin-bottom:0;" data-i18n="admin.docManagerTitle"></h3>
+            <input type="search" id="admin-doc-search" class="filter-select" data-i18n-placeholder="admin.searchDocsPlaceholder" style="min-width:240px;">
+          </div>
+          <div class="admin-doc-table-wrap">
+            <table class="admin-doc-table">
+              <thead>
+                <tr>
+                  <th style="width:36px;"><input type="checkbox" id="select-all-docs" title="Tout sélectionner"></th>
+                  <th data-i18n="admin.docTableTitle" data-sort="title" class="sortable"></th>
+                  <th data-i18n="admin.docTableModule" data-sort="module" class="sortable"></th>
+                  <th data-i18n="admin.docTableType" data-sort="type" class="sortable"></th>
+                  <th data-i18n="admin.docTableSemester" data-sort="semester" class="sortable"></th>
+                  <th data-i18n="admin.docTableYear" data-sort="year" class="sortable"></th>
+                  <th data-i18n="admin.docTableHost" data-sort="host" class="sortable"></th>
+                  <th data-i18n="admin.docTableSource" data-sort="source" class="sortable"></th>
+                  <th style="width:36px;" title="Liens"></th>
+                  <th data-i18n="admin.docTableActions"></th>
+                </tr>
+              </thead>
+              <tbody id="admin-doc-table-body">
+                <tr><td colspan="10" style="text-align:center;padding:1.5rem;color:var(--ink-soft);">Chargement…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-sub-panel hidden" id="sub-panel-docs-import">
+        <div class="admin-section">
+          <h3><span data-i18n="admin.importManifest">📥 Import par fichier JSON (manifeste)</span></h3>
+          <p style="font-size:var(--fs-xs);color:var(--ink-soft);margin:0.5rem 0 1rem;" data-i18n="admin.importManifestDesc">
+            Importe un fichier JSON contenant des documents (format dzexams / manifeste) pour les ajouter en un clic. Les champs sont automatiquement reconnus.
+          </p>
+          <div style="display:flex;gap:var(--space-2);align-items:center;flex-wrap:wrap;margin-bottom:var(--space-3);">
+            <input type="file" id="import-manifest-input" accept=".json" style="flex:1;min-width:200px;padding:6px;border:1px solid var(--kraft-line);border-radius:var(--radius-sm);background:var(--surface);">
+            <button class="btn btn-primary" id="import-analyze-btn" data-i18n="admin.importAnalyze">Analyser</button>
+          </div>
+          <div id="import-preview-container" style="display:none;"></div>
+          <div style="margin-top:var(--space-2);display:flex;align-items:center;gap:var(--space-2);flex-wrap:wrap;">
+            <button class="btn btn-secondary btn-sm" id="migrate-host-btn" data-i18n="admin.importMigrateHosts" title="Détecter le provider (google/mega/onedrive) depuis l'URL des documents importés">
+              🔄 <span data-i18n="admin.importMigrateHosts">Migrer hôtes</span>
+            </button>
+            <span style="font-size:var(--fs-xs);color:var(--ink-soft);" data-i18n="admin.importMigrateHostsHint">Met à jour la colonne Hébergeur d'après l'URL</span>
+          </div>
+        </div>
+
+        <div class="admin-section" style="margin-top:var(--space-4);border-top:1px solid var(--kraft-line);padding-top:var(--space-4);">
+          <h3>📤 <span data-i18n="admin.exportManifest">Export Manifest (cloud)</span></h3>
+          <p style="font-size:var(--fs-xs);color:var(--ink-soft);margin:0.5rem 0 1rem;" data-i18n="admin.exportManifestDesc">
+            Génère un fichier JSON manifeste avec tous les documents approuvés (compatible dzexams / fp-manifest-cli). Téléchargez-le ou copiez-le pour l'uploader sur Google Drive, MEGA, etc.
+          </p>
+          <div style="display:flex;gap:var(--space-2);align-items:center;flex-wrap:wrap;margin-bottom:var(--space-2);">
+            <button class="btn btn-primary btn-sm" id="export-manifest-download-btn">📥 <span data-i18n="admin.exportManifestDownload">Télécharger le manifeste</span></button>
+            <button class="btn btn-secondary btn-sm" id="export-manifest-copy-btn">📋 <span data-i18n="admin.exportManifestCopy">Copier dans le presse-papier</span></button>
+          </div>
+          <div id="export-manifest-stats" style="font-size:var(--fs-xs);color:var(--ink-soft);margin-top:var(--space-1);"></div>
+        </div>
+      </div>
+
+      <div class="admin-sub-panel hidden" id="sub-panel-docs-db">
+        <div class="admin-section">
+          <h3><span data-i18n="admin.exportDb">💾 Export / Import db.json</span></h3>
+          <div style="display:flex;flex-wrap:wrap;gap:var(--space-3);margin:var(--space-4) 0;">
+            <button class="btn btn-primary" id="export-db-btn" data-i18n="admin.exportDb"></button>
+            <label class="btn btn-secondary" style="cursor:pointer;">
+              <span data-i18n="admin.importDbFile"></span>
+              <input type="file" id="import-db-file-input" accept=".json" style="display:none;">
+            </label>
+            <button class="btn btn-secondary" id="import-db-btn" data-i18n="admin.importDb"></button>
+            <button class="btn btn-danger" id="reset-db-btn" data-i18n="admin.resetDb"></button>
+          </div>
+          <hr style="border:none;border-top:1px solid var(--kraft-line);margin:var(--space-4) 0;">
+          <h4 style="font-size:var(--fs-sm);font-weight:600;margin-bottom:var(--space-2);" data-i18n="admin.autoBackup">Sauvegarde automatique</h4>
+          <div style="font-size:var(--fs-xs);margin-bottom:var(--space-2);">
+            <label><input type="radio" name="auto-backup-mode" value="off"> <span data-i18n="admin.autoBackupOff">Désactivée</span></label>
+            <label><input type="radio" name="auto-backup-mode" value="interval"> <span data-i18n="admin.autoBackupInterval">Intervalle</span></label>
+            <label><input type="radio" name="auto-backup-mode" value="fixed"> <span data-i18n="admin.autoBackupFixed">Horaire fixe</span></label>
+          </div>
+          <div id="auto-backup-interval-group" style="display:none;align-items:center;gap:var(--space-2);margin-bottom:var(--space-2);">
+            <span style="font-size:var(--fs-xs);" data-i18n="admin.autoBackupEvery">Toutes les</span>
+            <input type="number" id="auto-backup-interval-val" min="1" style="width:60px;padding:var(--space-1);">
+            <select id="auto-backup-interval-unit" style="padding:var(--space-1);">
+              <option value="minutes" data-i18n="admin.autoBackupMinutes">minutes</option>
+              <option value="hours" data-i18n="admin.autoBackupHours">heures</option>
+              <option value="days" data-i18n="admin.autoBackupDays">jours</option>
+            </select>
+          </div>
+          <div id="auto-backup-fixed-group" style="display:none;align-items:center;gap:var(--space-2);margin-bottom:var(--space-2);">
+            <span style="font-size:var(--fs-xs);" data-i18n="admin.autoBackupAt">À</span>
+            <input type="time" id="auto-backup-fixed-hour" value="08:00" style="padding:var(--space-1);">
+          </div>
+          <button class="btn btn-primary btn-sm" id="auto-backup-save" data-i18n="admin.autoBackupApply">Appliquer</button>
+          <hr style="border:none;border-top:1px solid var(--kraft-line);margin:var(--space-4) 0;">
+          <div id="db-backup-list"></div>
+          <hr style="border:none;border-top:1px solid var(--kraft-line);margin:var(--space-4) 0;" />
+<h4 style="font-size:var(--fs-sm);font-weight:600;margin-bottom:var(--space-2);">☁️ Synchronisation GitHub</h4>
+<p style="font-size:var(--fs-xs);color:var(--ink-soft);margin-bottom:var(--space-2);">Push automatique de db.json vers GitHub pour synchroniser entre PC.</p>
+<div style="margin-bottom:var(--space-2);">
+  <label style="font-size:var(--fs-xs);">GitHub Personal Access Token</label>
+  <input type="password" id="github-pat-input" placeholder="ghp_xxxxxxxxxxxx" style="width:100%;padding:var(--space-2);border:1px solid var(--kraft-line);border-radius:var(--radius-sm);background:var(--surface);font-family:monospace;" />
+</div>
+<div style="display:flex;gap:var(--space-2);margin-bottom:var(--space-2);flex-wrap:wrap;">
+  <div style="flex:1;min-width:200px;">
+    <label style="font-size:var(--fs-xs);">Dépôt (owner/repo)</label>
+    <input type="text" id="github-repo-input" value="" placeholder="owner/repo" style="width:100%;padding:var(--space-2);border:1px solid var(--kraft-line);border-radius:var(--radius-sm);background:var(--surface);" />
+  </div>
+  <div style="flex:0 0 120px;">
+    <label style="font-size:var(--fs-xs);">Branche</label>
+    <input type="text" id="github-branch-input" value="main" style="width:100%;padding:var(--space-2);border:1px solid var(--kraft-line);border-radius:var(--radius-sm);background:var(--surface);" />
+  </div>
+  <div style="flex:0 0 250px;">
+    <label style="font-size:var(--fs-xs);">Chemin du fichier</label>
+    <input type="text" id="github-path-input" value="data/db.json" style="width:100%;padding:var(--space-2);border:1px solid var(--kraft-line);border-radius:var(--radius-sm);background:var(--surface);" />
+  </div>
+</div>
+<div style="display:flex;gap:var(--space-2);align-items:center;flex-wrap:wrap;margin-bottom:var(--space-2);">
+  <button class="btn btn-primary btn-sm" id="github-push-btn">⬆️ Pousser db.json vers GitHub</button>
+  <button class="btn btn-secondary btn-sm" id="github-save-config-btn">💾 Sauvegarder la config</button>
+  <span id="github-push-status" style="font-size:var(--fs-xs);color:var(--ink-soft);"></span>
+</div>
+<label style="font-size:var(--fs-xs);display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-2);cursor:pointer;">
+  <input type="checkbox" id="github-auto-push" style="width:auto;" /> Pousser automatiquement après chaque sauvegarde
+</label>
+<div id="github-push-log" style="font-size:var(--fs-xs);max-height:120px;overflow-y:auto;border:1px solid var(--kraft-line);border-radius:var(--radius-sm);padding:var(--space-2);display:none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============== STRUCTURE TAB ============== -->
+    <div class="admin-tab-panel hidden" id="tab-panel-structure">
+      <div class="admin-sub-tabs">
+        <button class="admin-sub-tab active" data-subtab="struct-diplomas"><span data-i18n="admin.tabDiplomas">🎓 Diplômes</span></button>
+        <button class="admin-sub-tab" data-subtab="struct-semesters"><span data-i18n="admin.tabSemesters">📅 Semestres</span></button>
+        <button class="admin-sub-tab" data-subtab="struct-modules"><span data-i18n="admin.tabModules">📦 Modules</span></button>
+        <button class="admin-sub-tab" data-subtab="struct-specialties"><span data-i18n="admin.tabSpecialties">🔧 Spécialités</span></button>
+      </div>
+
+      <!-- DIPLOMAS -->
+      <div class="admin-sub-panel" id="sub-panel-struct-diplomas">
+        <div class="admin-section">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-2);margin-bottom:var(--space-3);">
+            <h3 style="margin:0;" data-i18n="admin.tabDiplomas"></h3>
+            <button class="btn btn-primary btn-sm" id="add-diploma-btn" data-i18n="admin.addDiploma"></button>
+          </div>
+          <table class="admin-doc-table">
+            <thead>
+              <tr>
+                <th data-i18n="admin.diplomaCode"></th>
+                <th data-i18n="admin.diplomaName"></th>
+                <th data-i18n="admin.diplomaLevel"></th>
+                <th data-i18n="admin.diplomaDuration"></th>
+                <th data-i18n="admin.tabSemesters"></th>
+                <th data-i18n="admin.docTableActions" style="width:100px;"></th>
+              </tr>
+            </thead>
+            <tbody id="diplomas-table-body">
+              <tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--ink-soft);">Chargement…</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="admin-section" id="diploma-form-section" style="display:none;">
+          <h3 id="diploma-form-title" data-i18n="admin.addDiploma"></h3>
+          <form id="diploma-form" class="form-row-cols" style="margin-top:var(--space-3);">
+            <div class="form-row">
+              <label data-i18n="admin.diplomaCode"></label>
+              <input type="text" id="diploma-form-code" required pattern="[a-z0-9-]+" placeholder="ex: cmp">
+            </div>
+            <div class="form-row-cols-3">
+              <div class="form-row">
+                <label data-i18n="admin.diplomaName">Nom (français)</label>
+                <input type="text" id="diploma-form-name-fr" required>
+              </div>
+              <div class="form-row">
+                <label data-i18n="admin.diplomaName">Nom (arabe)</label>
+                <input type="text" id="diploma-form-name-ar" dir="rtl">
+              </div>
+              <div class="form-row">
+                <label data-i18n="admin.diplomaName">Nom (anglais)</label>
+                <input type="text" id="diploma-form-name-en">
+              </div>
+            </div>
+            <div class="form-row-cols">
+              <div class="form-row">
+                <label data-i18n="admin.diplomaLevel"></label>
+                <select id="diploma-form-level">
+                  <option value="1">Niveau 1 — CFPS</option>
+                  <option value="2">Niveau 2 — CAP</option>
+                  <option value="3">Niveau 3 — CMP / BP</option>
+                  <option value="4">Niveau 4 — BT</option>
+                  <option value="5">Niveau 5 — BTS</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label data-i18n="admin.diplomaDuration"></label>
+                <input type="text" id="diploma-form-duration" placeholder="ex: 18 mois">
+              </div>
+              <div class="form-row">
+                <label data-i18n="admin.tabSemesters"></label>
+                <input type="number" id="diploma-form-sem-count" min="1" max="8" value="4" placeholder="Nombre de semestres">
+              </div>
+            </div>
+            <div class="doc-form-actions">
+              <button class="btn btn-primary" type="submit" id="diploma-form-submit" data-i18n="admin.save"></button>
+              <button class="btn btn-secondary" type="button" id="diploma-form-cancel" data-i18n="admin.cancel"></button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- SEMESTERS -->
+      <div class="admin-sub-panel hidden" id="sub-panel-struct-semesters">
+        <div class="admin-section">
+          <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-3);flex-wrap:wrap;">
+            <div class="form-row" style="margin:0;min-width:200px;">
+              <label style="font-size:var(--fs-xs);" data-i18n="admin.selectDiploma"></label>
+              <select id="semester-diploma-select">
+                <option value="">—</option>
+              </select>
+            </div>
+            <div style="flex:1;"></div>
+            <button class="btn btn-primary btn-sm" id="add-semester-btn" disabled data-i18n="admin.addSemester"></button>
+          </div>
+          <table class="admin-doc-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th data-i18n="admin.diplomaName">Nom</th>
+                <th>Label</th>
+                <th data-i18n="admin.docTableActions" style="width:80px;"></th>
+              </tr>
+            </thead>
+            <tbody id="semesters-table-body">
+              <tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--ink-soft);">Sélectionne un diplôme</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="admin-section" id="semester-form-section" style="display:none;">
+          <h3 id="semester-form-title" data-i18n="admin.addSemester"></h3>
+          <form id="semester-form" style="margin-top:var(--space-3);">
+            <div class="form-row-cols-3">
+              <div class="form-row">
+                <label data-i18n="admin.diplomaName">Nom (français)</label>
+                <input type="text" id="semester-form-name-fr" required placeholder="Semestre N">
+              </div>
+              <div class="form-row">
+                <label>Nom (arabe)</label>
+                <input type="text" id="semester-form-name-ar" dir="rtl">
+              </div>
+              <div class="form-row">
+                <label>Nom (anglais)</label>
+                <input type="text" id="semester-form-name-en">
+              </div>
+            </div>
+            <div class="form-row-cols-3">
+              <div class="form-row">
+                <label>Label</label>
+                <input type="text" id="semester-form-label" placeholder="ex: S1">
+              </div>
+              <div class="form-row">
+                <label>Ordre</label>
+                <input type="number" id="semester-form-order" min="1" value="1">
+              </div>
+            </div>
+            <div class="doc-form-actions">
+              <button class="btn btn-primary" type="submit" id="semester-form-submit" data-i18n="admin.save"></button>
+              <button class="btn btn-secondary" type="button" id="semester-form-cancel" data-i18n="admin.cancel"></button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- MODULES -->
+      <div class="admin-sub-panel hidden" id="sub-panel-struct-modules">
+        <div class="admin-section">
+          <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-3);flex-wrap:wrap;">
+            <div class="form-row" style="margin:0;min-width:200px;">
+              <label style="font-size:var(--fs-xs);" data-i18n="admin.selectSpecialty"></label>
+              <select id="module-specialty-select">
+                <option value="">—</option>
+              </select>
+            </div>
+            <div style="flex:1;"></div>
+            <button class="btn btn-primary btn-sm" id="add-module-btn" disabled data-i18n="admin.addModule"></button>
+          </div>
+          <table class="admin-doc-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th data-i18n="admin.moduleName"></th>
+                <th data-i18n="admin.moduleSemester"></th>
+                <th data-i18n="admin.docTableActions" style="width:80px;"></th>
+              </tr>
+            </thead>
+            <tbody id="modules-table-body">
+              <tr><td colspan="4" style="text-align:center;padding:1.5rem;color:var(--ink-soft);">Sélectionne une spécialité</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="admin-section" id="module-form-section" style="display:none;">
+          <h3 id="module-form-title" data-i18n="admin.addModule"></h3>
+          <form id="module-form" class="form-row-cols" style="margin-top:var(--space-3);">
+            <div class="form-row">
+              <label>ID (code unique)</label>
+              <input type="text" id="module-form-id" required pattern="[a-z0-9-]+" placeholder="ex: mod-elec-base">
+            </div>
+            <div class="form-row-cols-3">
+              <div class="form-row">
+                <label data-i18n="admin.moduleName">Nom (français)</label>
+                <input type="text" id="module-form-name-fr" required>
+              </div>
+              <div class="form-row">
+                <label data-i18n="admin.moduleName">Nom (arabe)</label>
+                <input type="text" id="module-form-name-ar" dir="rtl">
+              </div>
+              <div class="form-row">
+                <label data-i18n="admin.moduleName">Nom (anglais)</label>
+                <input type="text" id="module-form-name-en">
+              </div>
+            </div>
+            <div class="form-row">
+              <label data-i18n="admin.selectSpecialty"></label>
+              <select id="module-form-specialty" required></select>
+            </div>
+            <div class="form-row">
+              <label data-i18n="admin.moduleSemester"></label>
+              <div id="module-form-semesters-checkboxes" style="display:flex;flex-wrap:wrap;gap:var(--space-2);padding:var(--space-2);border:1px solid var(--kraft-line);border-radius:var(--radius-sm);min-height:40px;">
+                <span style="color:var(--ink-soft);font-size:var(--fs-xs);">Sélectionne d'abord la spécialité ci-dessus</span>
+              </div>
+            </div>
+            <div class="doc-form-actions">
+              <button class="btn btn-primary" type="submit" id="module-form-submit" data-i18n="admin.save"></button>
+              <button class="btn btn-secondary" type="button" id="module-form-cancel" data-i18n="admin.cancel"></button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- SPECIALTIES -->
+      <div class="admin-sub-panel hidden" id="sub-panel-struct-specialties">
+        <div class="admin-section">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-2);margin-bottom:var(--space-3);">
+            <h3 style="margin:0;" data-i18n="admin.tabSpecialties"></h3>
+            <button class="btn btn-primary btn-sm" id="add-specialty-btn" data-i18n="admin.addSpecialty"></button>
+          </div>
+          <table class="admin-doc-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th data-i18n="admin.specialtyName"></th>
+                <th data-i18n="admin.specialtyIcon"></th>
+                <th data-i18n="admin.specialtyColor"></th>
+                <th data-i18n="admin.docTableActions" style="width:80px;"></th>
+              </tr>
+            </thead>
+            <tbody id="specialties-table-body">
+              <tr><td colspan="5" style="text-align:center;padding:1.5rem;color:var(--ink-soft);">Chargement…</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="admin-section" id="specialty-form-section" style="display:none;">
+          <h3 id="specialty-form-title" data-i18n="admin.addSpecialty"></h3>
+          <form id="specialty-form" class="form-row-cols" style="margin-top:var(--space-3);">
+            <div class="form-row">
+              <label>ID (code unique)</label>
+              <input type="text" id="specialty-form-id" required pattern="[a-z0-9-]+" placeholder="ex: genie-electrique">
+            </div>
+            <div class="form-row-cols-3">
+              <div class="form-row">
+                <label data-i18n="admin.specialtyName">Nom (français)</label>
+                <input type="text" id="specialty-form-name-fr" required>
+              </div>
+              <div class="form-row">
+                <label data-i18n="admin.specialtyName">Nom (arabe)</label>
+                <input type="text" id="specialty-form-name-ar" dir="rtl">
+              </div>
+              <div class="form-row">
+                <label data-i18n="admin.specialtyName">Nom (anglais)</label>
+                <input type="text" id="specialty-form-name-en">
+              </div>
+            </div>
+            <div class="form-row-cols">
+              <div class="form-row">
+                <label data-i18n="admin.specialtyIcon"></label>
+                <input type="text" id="specialty-form-icon" placeholder="ex: cpu, map, shield">
+              </div>
+              <div class="form-row">
+                <label data-i18n="admin.specialtyColor"></label>
+                <input type="color" id="specialty-form-color" value="#2563eb">
+              </div>
+            </div>
+            <div class="doc-form-actions">
+              <button class="btn btn-primary" type="submit" id="specialty-form-submit" data-i18n="admin.save"></button>
+              <button class="btn btn-secondary" type="button" id="specialty-form-cancel" data-i18n="admin.cancel"></button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============== KEYS TAB ============== -->
+    <div class="admin-tab-panel hidden" id="tab-panel-keys">
+      <div class="admin-section">
+        <h3 data-i18n="admin.tabKeys"></h3>
+        <form id="add-key-form" style="display:flex;flex-wrap:wrap;gap:var(--space-2);margin:var(--space-4) 0;">
+          <select id="key-provider" style="flex:1;min-width:140px;">
+            <option value="openai">OpenAI</option>
+            <option value="anthropic">Anthropic</option>
+            <option value="google">Google Gemini</option>
+            <option value="custom">Custom (OpenAI-compatible)</option>
+          </select>
+          <input type="text" id="key-api-key" data-i18n-placeholder="admin.apiKeyPlaceholder" style="flex:2;min-width:200px;">
+          <input type="text" id="key-model" placeholder="Modèle (ex: gpt-4o, claude-sonnet-4-20250514, gemini-2.0-flash)" style="flex:2;min-width:200px;">
+          <button class="btn btn-primary" type="submit" data-i18n="admin.addProvider"></button>
+        </form>
+        <div id="keys-container"></div>
+      </div>
+    </div>
+
+    <!-- ============== PASSWORD TAB ============== -->
+    <div class="admin-tab-panel hidden" id="tab-panel-password">
+      <div class="admin-section">
+        <h3 data-i18n="admin.tabPassword"></h3>
+        <form id="change-password-form" style="max-width:360px;margin:var(--space-4) 0;">
+          <div class="form-row">
+            <label data-i18n="admin.password">Ancien mot de passe</label>
+            <input type="password" id="change-password-old" required>
+          </div>
+          <div class="form-row">
+            <label data-i18n="admin.passwordPlaceholder">Nouveau mot de passe</label>
+            <input type="password" id="change-password-new" required minlength="4">
+          </div>
+          <button class="btn btn-primary" type="submit">Changer le mot de passe</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div id="footer-root"></div>
+<div id="global-toast" class="toast"></div>
+
+<script src="js/i18n.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/doc-manager.js"></script>
+<script src="js/admin.js"></script>
+<script>
+async function boot() {
+  await loadData();
+  applyLocalDocOverrides();
+  applyStructuralOverrides();
+  initLayout();
+  wireLayoutEvents();
+  translateStaticDOM();
+  initAdminPanel();
+}
+function onLangChange() { location.reload(); }
+document.addEventListener('DOMContentLoaded', boot);
+</script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://api.openai.com https://api.anthropic.com https://generativelanguage.googleapis.com https://api.mymemory.translated.net; frame-src https://drive.google.com https://docs.google.com; object-src 'none'; base-uri 'self';">
+<script>window.addEventListener('pageshow',function(e){if(e.persisted)location.reload();});</script>
+<title>Assistant IA — FP-SMART</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Sora:wght@400;600;700;800&family=Tajawal:wght@400;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/assistant-admin.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Aller au contenu</a>
+<div id="header-root"></div>
+
+<main class="page-content" style="max-width:800px;margin:0 auto;padding:var(--space-5);">
+  <section style="text-align:center;margin-bottom:var(--space-5);">
+    <h1 data-i18n="assistant.title" style="font-size:var(--fs-xl);"></h1>
+    <p data-i18n="assistant.subtitle" style="color:var(--ink-soft);"></p>
+    <div style="margin-top:var(--space-2);">
+      <select id="key-select" class="filter-select" style="max-width:400px;"></select>
+      <span id="provider-label" class="provider-pill"></span>
+    </div>
+  </section>
+
+  <div class="chat-toolbar" id="chat-toolbar">
+    <button class="btn btn-ghost btn-sm" id="conv-toggle-btn" title="Conversations">☰</button>
+    <input type="text" id="chat-search-inp" placeholder="🔍 Rechercher dans le chat…" style="flex:1;max-width:300px;padding:var(--space-2)var(--space-3);border:2px solid var(--kraft);border-radius:var(--radius-md);background:var(--surface);color:var(--ink);font-size:var(--fs-xs);display:none;" />
+    <div style="display:flex;gap:var(--space-1);margin-inline-start:auto;">
+      <button class="btn btn-ghost btn-sm" id="saved-prompts-btn" title="Prompts sauvegardés">📋</button>
+      <button class="btn btn-ghost btn-sm" id="export-chat-btn" title="Exporter le chat">↓</button>
+      <button class="btn btn-ghost btn-sm" id="toggle-search-btn" title="Rechercher">🔍</button>
+    </div>
+  </div>
+
+  <div class="conv-sidebar" id="conv-sidebar" style="display:none;">
+    <div class="conv-sidebar-header">
+      <strong style="font-size:var(--fs-xs);">Conversations</strong>
+      <button class="btn btn-primary btn-sm" id="conv-new-btn">+ Nouvelle</button>
+    </div>
+    <div id="conv-list" class="conv-list"></div>
+  </div>
+
+  <div id="chat-output" class="chat-scroll" style="height:400px;overflow-y:auto;border:2px solid var(--kraft-line);border-radius:var(--radius-md);padding:var(--space-3);margin-bottom:var(--space-3);background:var(--surface);"></div>
+
+  <div class="chat-suggestions" id="suggestion-chips" style="display:none;margin-bottom:var(--space-3);"></div>
+
+  <div id="saved-prompts-panel" style="display:none;background:var(--surface);border:1px solid var(--kraft-line);border-radius:var(--radius-md);padding:var(--space-3);margin-bottom:var(--space-3);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-2);">
+      <span style="font-weight:600;">Prompts sauvegardés</span>
+      <button class="btn btn-ghost btn-sm" id="close-prompts-btn">Fermer</button>
+    </div>
+    <div id="prompts-list"></div>
+  </div>
+
+  <div id="chat-attachments" style="margin-bottom:var(--space-2);"></div>
+  <div id="chat-img-preview" style="display:none;margin-bottom:var(--space-2);max-width:200px;max-height:150px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--kraft-line);position:relative;">
+    <img src="" alt="Aperçu" style="width:100%;height:100%;object-fit:cover;display:block;" />
+    <button class="btn btn-ghost btn-sm" id="chat-img-remove" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,0.5);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;">✕</button>
+  </div>
+
+  <form id="chat-form" class="chat-input-row">
+    <div class="chat-input-main" style="display:flex;gap:var(--space-2);align-items:flex-end;">
+      <label class="btn btn-secondary btn-attach" id="chat-attach-btn" title="Joindre un fichier" style="flex-shrink:0;cursor:pointer;">
+        📎
+        <input type="file" id="chat-file-input" accept="image/*,.pdf,.txt" style="display:none;" />
+      </label>
+      <textarea id="chat-input" rows="1" dir="auto" data-i18n-placeholder="assistant.placeholder" style="flex:1;padding:var(--space-2)var(--space-3);border:2px solid var(--kraft);border-radius:var(--radius-md);font-size:var(--fs-sm);background:var(--surface);color:var(--ink);resize:vertical;" required></textarea>
+      <button class="btn btn-primary" type="submit" style="padding:var(--space-2)var(--space-4);flex-shrink:0;">
+        <span data-i18n="assistant.send"></span>
+      </button>
+    </div>
+    <div class="chat-input-tools" style="display:flex;gap:var(--space-1);margin-top:var(--space-1);">
+      <button class="btn btn-secondary btn-sm" id="chat-img-btn" type="button">🖼 Image</button>
+      <button class="btn btn-secondary btn-sm" id="chat-canvas-btn" type="button">🪶 Canvas</button>
+      <button class="btn btn-ghost btn-sm" id="clear-chat-btn" data-i18n="assistant.clear" type="button"></button>
+    </div>
+  </form>
+
+  <section id="assistant-key-section" style="margin-top:var(--space-6);border-top:2px solid var(--kraft-line);padding-top:var(--space-4);">
+    <h3 style="font-size:var(--fs-md);margin-bottom:var(--space-3);">🔑 Clés API</h3>
+    <div id="assistant-key-list" style="margin-bottom:var(--space-3);"></div>
+    <form id="assistant-key-add-form" style="display:flex;flex-direction:column;gap:var(--space-2);max-width:500px;">
+      <input type="password" id="assistant-key-apikey" placeholder="Clé API…" style="padding:var(--space-2)var(--space-3);border:2px solid var(--kraft);border-radius:var(--radius-md);font-size:var(--fs-sm);background:var(--surface);color:var(--ink);" required />
+      <div style="display:flex;gap:var(--space-2);">
+        <select id="assistant-key-provider" style="flex:1;padding:var(--space-2)var(--space-3);border:2px solid var(--kraft);border-radius:var(--radius-md);font-size:var(--fs-sm);background:var(--surface);color:var(--ink);"></select>
+        <input type="text" id="assistant-key-model" placeholder="Modèle (auto)" style="flex:1;padding:var(--space-2)var(--space-3);border:2px solid var(--kraft);border-radius:var(--radius-md);font-size:var(--fs-sm);background:var(--surface);color:var(--ink);" />
+      </div>
+      <button class="btn btn-primary" type="submit" style="align-self:flex-start;">Ajouter la clé</button>
+    </form>
+  </section>
+</main>
+
+<div id="footer-root"></div>
+<div id="global-toast" class="toast"></div>
+
+<script src="js/icons.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/assistant.js"></script>
+<script>
+async function init() {
+  try {
+    await loadData();
+    applyLangToDocument();
+    document.title = t('assistant.title') + ' — ' + t('siteName');
+    document.getElementById('header-root').innerHTML = renderHeader('assistant');
+    document.getElementById('footer-root').innerHTML = renderFooter();
+    translateStaticDOM();
+    wireLayoutEvents();
+    initAssistant();
+  } catch(e) {
+    console.error('[init]', e);
+    var d = document.createElement('div');
+    d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:red;color:#fff;padding:8px;z-index:9999;font-size:14px;';
+    d.textContent = 'Init Error: ' + e.message;
+    document.body.prepend(d);
+  }
+}
+
+function onLangChange() { init(); }
+
+init();
+</script>
+</body>
+</html>

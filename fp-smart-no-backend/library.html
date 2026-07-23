@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bibliothèque — FP-SMART</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/assistant-admin.css">
+</head>
+<body>
+<div id="header-root"></div>
+
+<main class="page-content">
+  <section class="hero-section" style="padding:var(--space-8) var(--space-5);text-align:center;">
+    <h1 class="page-title" data-i18n="library.title" style="font-size:var(--fs-2xl);"></h1>
+    <p class="page-subtitle" data-i18n="hero.subtitle" style="color:var(--ink-soft);max-width:600px;margin:var(--space-2) auto;"></p>
+  </section>
+
+  <section class="filters-section" style="padding:0 var(--space-5) var(--space-5);">
+    <div class="filters-row" style="display:flex;flex-wrap:wrap;gap:var(--space-2);align-items:center;max-width:1200px;margin:0 auto;">
+      <input type="search" id="filter-search" data-i18n-placeholder="hero.searchPlaceholder" class="filter-select" style="min-width:220px;flex:1;">
+      <select id="filter-diploma" class="filter-select"><option value="" data-i18n="filters.allDiplomas"></option></select>
+      <select id="filter-semester" class="filter-select"><option value="" data-i18n="filters.allSemesters"></option></select>
+      <select id="filter-specialty" class="filter-select"><option value="" data-i18n="filters.allSpecialties"></option></select>
+      <select id="filter-module" class="filter-select"><option value="" data-i18n="filters.allModules"></option></select>
+      <select id="filter-type" class="filter-select"><option value="" data-i18n="filters.allTypes"></option></select>
+      <select id="filter-year" class="filter-select"><option value="" data-i18n="filters.allYears"></option></select>
+      <button class="btn btn-secondary btn-sm" id="filter-reset" data-i18n="filters.reset"></button>
+    </div>
+  </section>
+
+  <section class="documents-section" style="padding:0 var(--space-5) var(--space-10);">
+    <div id="documents-container" style="max-width:1200px;margin:0 auto;">
+      <div class="loading" data-i18n="common.loading"></div>
+    </div>
+  </section>
+</main>
+
+<div id="footer-root"></div>
+<div id="modal-root"></div>
+<div id="global-toast" class="toast"></div>
+
+<script src="js/i18n.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/documents.js"></script>
+<script src="js/doc-manager.js"></script>
+<script src="js/admin.js"></script>
+<script>
+async function boot() {
+  await loadData();
+  applyLocalDocOverrides();
+  applyStructuralOverrides();
+  initLayout();
+  document.getElementById('modal-root').innerHTML = renderDocModal();
+  wireLayoutEvents();
+  translateStaticDOM();
+  initLibraryPage();
+}
+function onLangChange() { location.reload(); }
+document.addEventListener('DOMContentLoaded', boot);
+</script>
+</body>
+</html>

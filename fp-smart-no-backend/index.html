@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://api.openai.com https://api.anthropic.com https://generativelanguage.googleapis.com https://api.mymemory.translated.net; frame-src https://drive.google.com https://docs.google.com; object-src 'none'; base-uri 'self';">
+<script>window.addEventListener('pageshow',function(e){if(e.persisted)location.reload();});</script>
+<title>FP-SMART — Bibliothèque numérique de la Formation Professionnelle</title>
+<meta name="description" content="Cours, modules, examens et ressources pédagogiques pour la Formation Professionnelle en Algérie — CMP, BT, BTS, ATS.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/assistant-admin.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Aller au contenu</a>
+<div id="header-root"></div>
+
+<main id="main">
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="animate-in">
+        <div class="hero-eyebrow-row">
+          <span class="stamp" id="hero-stamp">🇩🇿 FP-SMART</span>
+        </div>
+        <h1 data-i18n="hero.title"></h1>
+        <p class="hero-subtitle" data-i18n="hero.subtitle"></p>
+        <form class="search-bar" id="hero-search-form">
+          <input type="search" id="hero-search-input" data-i18n-placeholder="hero.searchPlaceholder" autocomplete="off">
+          <button class="btn btn-primary" type="submit"><span data-i18n="hero.cta"></span></button>
+        </form>
+        <div class="hero-stats">
+          <div>
+            <div class="hero-stat-num" id="stat-docs">0</div>
+            <div class="hero-stat-label" data-i18n="hero.stat1"></div>
+          </div>
+          <div>
+            <div class="hero-stat-num" id="stat-modules">0</div>
+            <div class="hero-stat-label" data-i18n="hero.stat2"></div>
+          </div>
+          <div>
+            <div class="hero-stat-num" id="stat-diplotmes">0</div>
+            <div class="hero-stat-label" data-i18n="hero.stat3"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual animate-in delay-2">
+        <div class="dossier-stack">
+          <div class="dossier-card back-2"></div>
+          <div class="dossier-card back-1"></div>
+          <div class="dossier-card front">
+            <div class="dossier-line short"></div>
+            <div class="dossier-line"></div>
+            <div class="dossier-line"></div>
+            <div class="dossier-line tiny"></div>
+            <div class="dossier-line short" style="margin-top:1.5rem;"></div>
+            <div class="dossier-line"></div>
+            <div class="dossier-line tiny"></div>
+            <svg class="dossier-stamp-seal" viewBox="0 0 100 100" fill="none" style="color:var(--red-stamp);">
+              <circle cx="50" cy="50" r="46" stroke="currentColor" stroke-width="3" stroke-dasharray="5 4"/>
+              <circle cx="50" cy="50" r="36" stroke="currentColor" stroke-width="2"/>
+              <text x="50" y="46" font-size="10" text-anchor="middle" fill="currentColor" font-family="Inter, sans-serif" font-weight="700">BTS</text>
+              <text x="50" y="60" font-size="9" text-anchor="middle" fill="currentColor" font-family="Inter, sans-serif">2026</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <div class="section-header">
+        <h2 data-i18n="hero.recentHeading">📂 Documents récents</h2>
+        <a href="library.html" class="btn btn-ghost" data-i18n="card.viewDetails"></a>
+      </div>
+      <div class="doc-grid" id="recent-grid"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2 data-i18n="hero.diplomasHeading">🎓 Diplômes</h2>
+      </div>
+      <div class="quick-grid" id="diplomas-grid"></div>
+      <div id="cascade-panel" class="cascade-panel" style="display:none;margin-top:var(--space-4);"></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <div class="section-header">
+        <h2 data-i18n="hero.specialtiesHeading">🔧 Spécialités</h2>
+        <a href="library.html" class="btn btn-ghost" data-i18n="card.viewDetails"></a>
+      </div>
+      <div class="quick-grid" id="specialties-grid"></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <div class="section-header">
+        <h2 data-i18n="hero.semestersHeading">📅 Semestres</h2>
+      </div>
+      <div class="quick-grid" id="semesters-cat-grid"></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <div class="section-header">
+        <h2 data-i18n="filters.module">📦 Modules</h2>
+        <a href="library.html" class="btn btn-ghost" data-i18n="card.viewDetails"></a>
+      </div>
+      <div class="quick-grid" id="modules-grid"></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <div class="section-header">
+        <h2 data-i18n="hero.featuredHeading">⭐ En vedette</h2>
+        <a href="library.html" class="btn btn-ghost" data-i18n="card.viewDetails"></a>
+      </div>
+      <div class="doc-grid" id="featured-grid"></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <div class="section-header">
+        <h2 data-i18n="hero.generalHeading">📚 Général</h2>
+        <a href="library.html" class="btn btn-ghost" data-i18n="card.viewDetails"></a>
+      </div>
+      <div class="doc-grid" id="general-grid"></div>
+    </div>
+  </section>
+</main>
+
+<div id="footer-root"></div>
+<div id="modal-root"></div>
+
+<script src="js/i18n.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/documents.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/assistant.js"></script>
+<script src="js/doc-manager.js"></script>
+<script>
+function render() {
+  document.title = t('siteName') + ' — ' + t('tagline');
+  document.getElementById('header-root').innerHTML = renderHeader('home');
+  document.getElementById('footer-root').innerHTML = renderFooter();
+  document.getElementById('modal-root').innerHTML = renderDocModal();
+  translateStaticDOM();
+  document.getElementById('theme-toggle').innerHTML = icon(APP.theme === 'light' ? 'moon' : 'sun');
+
+  const hiddenDocIds = new Set((function() { try { return JSON.parse(localStorage.getItem('fp_hidden_doc_ids') || '[]'); } catch { return []; } })());
+  const deletedDocIds = new Set((function() { try { return JSON.parse(localStorage.getItem('fp_deleted_doc_ids') || '[]'); } catch { return []; } })());
+  function isDocVisible(d) { return !hiddenDocIds.has(d.id) && !deletedDocIds.has(d.id); }
+  const hiddenDipIds = new Set((function() { try { return JSON.parse(localStorage.getItem('fp_hidden_diploma_ids') || '[]'); } catch { return []; } })());
+  const hiddenSemIds = new Set((function() { try { return JSON.parse(localStorage.getItem('fp_hidden_semester_ids') || '[]'); } catch { return []; } })());
+  const hiddenModIds = new Set((function() { try { return JSON.parse(localStorage.getItem('fp_hidden_module_ids') || '[]'); } catch { return []; } })());
+  const hiddenSpecIds = new Set((function() { try { return JSON.parse(localStorage.getItem('fp_hidden_specialty_ids') || '[]'); } catch { return []; } })());
+
+  const visibleDocs = APP.db.documents.filter(d => isDocVisible(d));
+  document.getElementById('stat-docs').textContent = visibleDocs.length + '+';
+  document.getElementById('stat-modules').textContent = APP.db.modules.length;
+  document.getElementById('stat-diplotmes').textContent = APP.db.diplomas.length;
+
+  document.getElementById('hero-stamp').textContent = '🇩🇿 ' + t('siteName');
+
+  // diplomas grid (cascade: diploma → specialties → semesters → modules → documents)
+  var cascadeData = { diploma: null, specialty: null, semester: null, module: null };
+  var diplomasGrid = document.getElementById('diplomas-grid');
+  diplomasGrid.innerHTML = APP.db.diplomas.filter(function(d) { return !hiddenDipIds.has(d.id); }).map(function(dip) {
+    var count = APP.db.documents.filter(function(d) { return d.diploma === dip.id && isDocVisible(d); }).length;
+    return '<div class="quick-tile cascade-diploma-tile" data-diploma="' + escapeAttr(dip.id) + '" style="cursor:pointer;">' +
+      '<div class="quick-tile-icon">' + icon('book') + '</div>' +
+      '<div>' +
+        '<div class="quick-tile-name">' + escapeHTML(localized(dip.name)) + '</div>' +
+        '<div class="quick-tile-count">' + count + ' ' + (t('filters.results') || 'résultat(s)') + '</div>' +
+      '</div></div>';
+  }).join('');
+
+  function renderCascadePanel() {
+    var panel = document.getElementById('cascade-panel');
+    if (!cascadeData.diploma) { panel.style.display = 'none'; return; }
+    var dip = APP.db.diplomas.find(function(d) { return d.id === cascadeData.diploma; });
+    if (!dip) { panel.style.display = 'none'; return; }
+    panel.style.display = 'block';
+
+    var hiddenDocIds = new Set(getHiddenIds());
+    var deletedDocIds = new Set((function() { try { return JSON.parse(localStorage.getItem('fp_deleted_doc_ids') || '[]'); } catch { return []; } })());
+    function cascadeDocVisible(d) { return !hiddenDocIds.has(d.id) && !deletedDocIds.has(d.id); }
+    var dipName = escapeHTML(localized(dip.name));
+    var html = '';
+    var backBtn = '<button class="btn btn-ghost btn-sm cascade-back" style="margin-bottom:var(--space-2);">← ' + (t('card.viewDetails') || 'Retour') + '</button>';
+
+    // Level 1: choose specialty
+    if (!cascadeData.specialty) {
+      var specIds = [];
+      APP.db.documents.forEach(function(d) {
+        if (d.diploma === cascadeData.diploma && d.specialty && cascadeDocVisible(d) && specIds.indexOf(d.specialty) < 0) {
+          specIds.push(d.specialty);
+        }
+      });
+      var specialties = APP.db.specialties.filter(function(s) { return !hiddenSpecIds.has(s.id) && specIds.indexOf(s.id) >= 0; });
+      if (specialties.length === 0) {
+        cascadeData.specialty = '';
+        renderCascadePanel();
+        return;
+      }
+      html = '<div class="cascade-level">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-2);margin-bottom:var(--space-3);">' +
+          '<h3 style="font-size:var(--fs-lg);margin:0;">' + dipName + ' — ' + (t('filters.allSpecialties') || 'Toutes les spécialités') + '</h3>' +
+          '<a class="btn btn-ghost btn-sm" href="library.html?diploma=' + escapeAttr(cascadeData.diploma) + '">' + (t('card.viewDetails') || 'Voir dans la bibliothèque') + ' →</a>' +
+        '</div>' +
+        '<div class="quick-grid">';
+      specialties.forEach(function(s) {
+        var cnt = APP.db.documents.filter(function(d) { return d.diploma === cascadeData.diploma && d.specialty === s.id && cascadeDocVisible(d); }).length;
+        html += '<div class="quick-tile cascade-specialty-tile" data-specialty="' + escapeAttr(s.id) + '" style="cursor:pointer;">' +
+          '<div class="quick-tile-icon">' + icon(s.icon || 'map') + '</div>' +
+          '<div>' +
+            '<div class="quick-tile-name">' + escapeHTML(localized(s.name)) + '</div>' +
+            '<div class="quick-tile-count">' + cnt + ' ' + (t('filters.results') || 'doc.') + '</div>' +
+          '</div></div>';
+      });
+      html += '</div></div>';
+    // Level 2: choose semester
+    } else if (!cascadeData.semester) {
+      var specObj = cascadeData.specialty ? APP.db.specialties.find(function(s) { return s.id === cascadeData.specialty; }) : null;
+      var specName = escapeHTML(specObj ? localized(specObj.name) : cascadeData.specialty);
+      var semesters = (dip.semesters || []).filter(function(s) { return !hiddenSemIds.has(s.id); });
+      html = '<div class="cascade-level">' +
+        backBtn +
+        '<h3 style="font-size:var(--fs-lg);margin-bottom:var(--space-3);">' + dipName + (specName ? ' › ' + specName : '') + ' — ' + (t('filters.semester') || 'Semestres') + '</h3>' +
+        '<div class="quick-grid" style="grid-template-columns:repeat(auto-fill,minmax(140px,1fr));">';
+      semesters.forEach(function(s) {
+        var docCount = cascadeData.specialty
+          ? APP.db.documents.filter(function(d) { return d.diploma === cascadeData.diploma && d.specialty === cascadeData.specialty && d.semester === s.id && cascadeDocVisible(d); }).length
+          : APP.db.documents.filter(function(d) { return d.diploma === cascadeData.diploma && d.semester === s.id && cascadeDocVisible(d); }).length;
+        if (docCount > 0) {
+          html += '<div class="quick-tile cascade-semester-tile" data-semester="' + escapeAttr(s.id) + '" style="cursor:pointer;text-align:center;">' +
+            '<div class="quick-tile-icon">' + icon('calendar') + '</div>' +
+            '<div>' +
+              '<div class="quick-tile-name">' + escapeHTML(localized(s.name)) + '</div>' +
+              '<div class="quick-tile-count">' + docCount + ' ' + (t('filters.results') || 'doc.') + '</div>' +
+            '</div></div>';
+        }
+      });
+      html += '</div></div>';
+    // Level 3: choose module
+    } else if (!cascadeData.module) {
+      var specObj = cascadeData.specialty ? APP.db.specialties.find(function(s) { return s.id === cascadeData.specialty; }) : null;
+      var specName = escapeHTML(specObj ? localized(specObj.name) : cascadeData.specialty);
+      var semObj = (dip.semesters || []).find(function(s) { return s.id === cascadeData.semester; });
+      var semName = escapeHTML(semObj ? localized(semObj.name) : cascadeData.semester);
+      var docModules = {};
+      APP.db.documents.forEach(function(d) {
+        var match = d.semester === cascadeData.semester && d.diploma === cascadeData.diploma && cascadeDocVisible(d);
+        if (cascadeData.specialty) match = match && d.specialty === cascadeData.specialty;
+        if (match) {
+          if (d.module) docModules[d.module] = (docModules[d.module] || 0) + 1;
+        }
+      });
+      var relevantModIds = Object.keys(docModules);
+      APP.db.modules.forEach(function(m) {
+        var matches = !hiddenModIds.has(m.id) && m.semesters && m.semesters.indexOf(cascadeData.semester) >= 0 && relevantModIds.indexOf(m.id) < 0;
+        if (cascadeData.specialty) matches = matches && m.specialty === cascadeData.specialty;
+        if (matches) relevantModIds.push(m.id);
+      });
+      var relevantMods = APP.db.modules.filter(function(m) { return !hiddenModIds.has(m.id) && relevantModIds.indexOf(m.id) >= 0; });
+      html = '<div class="cascade-level">' +
+        backBtn +
+        '<h3 style="font-size:var(--fs-lg);margin-bottom:var(--space-3);">' + dipName + (specName ? ' › ' + specName : '') + ' › ' + semName + '</h3>';
+      if (relevantMods.length) {
+        html += '<div class="quick-grid">';
+        relevantMods.forEach(function(m) {
+          var cnt = docModules[m.id] || 0;
+          html += '<div class="quick-tile cascade-module-tile" data-module="' + escapeAttr(m.id) + '" style="cursor:pointer;">' +
+            '<div class="quick-tile-icon">' + icon('fileText') + '</div>' +
+            '<div>' +
+              '<div class="quick-tile-name">' + escapeHTML(localized(m.name)) + '</div>' +
+              '<div class="quick-tile-count">' + cnt + ' ' + (t('filters.results') || 'doc.') + '</div>' +
+            '</div></div>';
+        });
+        html += '</div>';
+      } else {
+        html += '<p style="color:var(--ink-soft);">' + (t('empty.title') || 'Aucun module') + ' ' + (t('empty.subtitle') || '') + '</p>';
+      }
+      html += '</div>';
+    // Level 4: documents
+    } else {
+      var specObj = cascadeData.specialty ? APP.db.specialties.find(function(s) { return s.id === cascadeData.specialty; }) : null;
+      var specName = escapeHTML(specObj ? localized(specObj.name) : cascadeData.specialty);
+      var semObj = (dip.semesters || []).find(function(s) { return s.id === cascadeData.semester; });
+      var semName = escapeHTML(semObj ? localized(semObj.name) : cascadeData.semester);
+      var modObj = APP.db.modules.find(function(m) { return m.id === cascadeData.module; });
+      var modName = escapeHTML(modObj ? localized(modObj.name) : cascadeData.module);
+      var docs = APP.db.documents.filter(function(d) {
+        return d.module === cascadeData.module && d.semester === cascadeData.semester && cascadeDocVisible(d);
+      });
+      html = '<div class="cascade-level">' +
+        backBtn +
+        '<h3 style="font-size:var(--fs-lg);margin-bottom:var(--space-3);">' + dipName + (specName ? ' › ' + specName : '') + ' › ' + semName + ' › ' + modName + '</h3>';
+      if (docs.length) {
+        html += '<div class="doc-grid">' + docs.map(compactDocCardHTML).join('') + '</div>';
+      } else {
+        html += '<p style="color:var(--ink-soft);">' + (t('admin.docsEmpty') || 'Aucun document trouvé pour ce module.') + '</p>';
+      }
+      html += '</div>';
+    }
+    panel.innerHTML = html;
+    wireCascadeEvents();
+  }
+
+  function wireCascadeEvents() {
+    var panel = document.getElementById('cascade-panel');
+    panel.querySelectorAll('.cascade-specialty-tile').forEach(function(tile) {
+      tile.addEventListener('click', function() {
+        cascadeData.specialty = tile.dataset.specialty;
+        cascadeData.semester = null;
+        cascadeData.module = null;
+        renderCascadePanel();
+      });
+    });
+    panel.querySelectorAll('.cascade-semester-tile').forEach(function(tile) {
+      tile.addEventListener('click', function() {
+        cascadeData.semester = tile.dataset.semester;
+        cascadeData.module = null;
+        renderCascadePanel();
+      });
+    });
+    panel.querySelectorAll('.cascade-module-tile').forEach(function(tile) {
+      tile.addEventListener('click', function() {
+        cascadeData.module = tile.dataset.module;
+        renderCascadePanel();
+      });
+    });
+    panel.querySelectorAll('.cascade-back').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        if (cascadeData.module) { cascadeData.module = null; renderCascadePanel(); return; }
+        if (cascadeData.semester) { cascadeData.semester = null; renderCascadePanel(); return; }
+        if (cascadeData.specialty) { cascadeData.specialty = null; renderCascadePanel(); return; }
+        cascadeData.diploma = null;
+        renderCascadePanel();
+      });
+    });
+    panel.querySelectorAll('.doc-preview-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() { addRecentDoc(btn.dataset.docId); openDocModal(btn.dataset.docId); });
+    });
+    panel.querySelectorAll('.doc-fav-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) { e.stopPropagation(); var id = btn.dataset.docId; var isNowFav = toggleFavorite(id); btn.style.color = isNowFav ? 'var(--red-stamp)' : 'var(--ink-soft)'; });
+    });
+    panel.querySelectorAll('.doc-card').forEach(function(card) {
+      card.addEventListener('click', function(e) {
+        if (e.target.closest('button') || e.target.closest('a')) return;
+        addRecentDoc(card.dataset.docId);
+        openDocModal(card.dataset.docId);
+      });
+    });
+  }
+
+  diplomasGrid.querySelectorAll('.cascade-diploma-tile').forEach(function(tile) {
+    tile.addEventListener('click', function() {
+      var dipId = tile.dataset.diploma;
+      if (cascadeData.diploma === dipId) {
+        cascadeData.diploma = null;
+        cascadeData.specialty = null;
+        cascadeData.semester = null;
+        cascadeData.module = null;
+        renderCascadePanel();
+      } else {
+        cascadeData.diploma = dipId;
+        cascadeData.specialty = null;
+        cascadeData.semester = null;
+        cascadeData.module = null;
+        renderCascadePanel();
+      }
+    });
+  });
+
+  // specialties grid — all specialties as quick tiles
+  var specialtiesGrid = document.getElementById('specialties-grid');
+  if (specialtiesGrid) {
+    specialtiesGrid.innerHTML = APP.db.specialties.filter(function(s) { return !hiddenSpecIds.has(s.id); }).map(function(spec) {
+      var count = APP.db.documents.filter(function(d) { return d.specialty === spec.id && isDocVisible(d); }).length;
+      return '<a class="quick-tile" href="library.html?specialty=' + escapeAttr(spec.id) + '">' +
+        '<div class="quick-tile-icon">' + icon(spec.icon || 'map') + '</div>' +
+        '<div>' +
+          '<div class="quick-tile-name">' + escapeHTML(localized(spec.name)) + '</div>' +
+          '<div class="quick-tile-count">' + count + ' ' + (t('filters.results') || 'doc.') + '</div>' +
+        '</div></a>';
+    }).join('');
+  }
+
+  // semesters grid — grouped by semester name (shared across diplomas): semester → diplomas → documents
+  var semCatGrid = document.getElementById('semesters-cat-grid');
+  semCatGrid.innerHTML = '';
+  // Collect all unique semester names across all diplomas
+  var semNameOrder = [];
+  var semNameSeen = {};
+  var semNameDiplomas = {};
+  APP.db.diplomas.forEach(function(dip) {
+    if (hiddenDipIds.has(dip.id)) return;
+    (dip.semesters || []).forEach(function(s) {
+      var sName = localized(s.name);
+      if (!semNameSeen[sName]) { semNameSeen[sName] = true; semNameOrder.push(sName); }
+      if (!semNameDiplomas[sName]) semNameDiplomas[sName] = {};
+      semNameDiplomas[sName][dip.id] = (semNameDiplomas[sName][dip.id] || 0);
+    });
+  });
+  // Count documents per semester name per diploma
+  APP.db.documents.forEach(function(d) {
+    if (!isDocVisible(d) || !d.semester || !d.diploma) return;
+    // resolve semester name from semester id
+    for (var i = 0; i < APP.db.diplomas.length; i++) {
+      var found = (APP.db.diplomas[i].semesters || []).find(function(s) { return String(s.id) === String(d.semester); });
+      if (found) {
+        var sName = localized(found.name);
+        if (semNameDiplomas[sName] && semNameDiplomas[sName][d.diploma] !== undefined) {
+          semNameDiplomas[sName][d.diploma]++;
+        }
+        break;
+      }
+    }
+  });
+  semNameOrder.forEach(function(semName) {
+    var totalCount = 0;
+    var dipCount = 0;
+    Object.keys(semNameDiplomas[semName]).forEach(function(dipId) {
+      if (!hiddenDipIds.has(dipId)) { totalCount += semNameDiplomas[semName][dipId]; dipCount++; }
+    });
+    var isEmpty = totalCount === 0;
+    semCatGrid.innerHTML += '<div class="level-category' + (isEmpty ? ' cat-empty' : '') + '">' +
+      '<a class="quick-tile' + (isEmpty ? ' tile-empty' : '') + '" href="javascript:void(0)" ' + (isEmpty ? '' : 'onclick="toggleSemCategoryByName(\'' + semName.replace(/'/g, "\\'") + '\')"') + ' data-sem-name="' + semName.replace(/'/g, "&#39;") + '">' +
+        '<div class="quick-tile-icon">' + icon('calendar') + '</div>' +
+        '<div>' +
+          '<div class="quick-tile-name">' + escapeHTML(semName) + '</div>' +
+          '<div class="quick-tile-count">' + (isEmpty ? t('admin.docsEmpty') || 'Aucun document' : totalCount + ' ' + (t('filters.results') || 'doc.') + ' — ' + dipCount + ' ' + (t('filters.diploma') || 'diplôme(s)')) + '</div>' +
+        '</div>' +
+        (isEmpty ? '' : '<span class="expand-icon">' + icon('chevronDown') + '</span>') +
+      '</a>' +
+      '<div class="level-subgrid" id="sem-name-grid-' + semName.replace(/\s+/g, '-') + '" style="display:none;"></div>' +
+    '</div>';
+  });
+
+  // modules grid — all modules as quick tiles
+  var modulesGrid = document.getElementById('modules-grid');
+  modulesGrid.innerHTML = APP.db.modules.filter(function(m) { return !hiddenModIds.has(m.id); }).map(function(mod) {
+    var count = APP.db.documents.filter(function(d) { return d.module === mod.id && isDocVisible(d); }).length;
+    return '<a class="quick-tile" href="library.html?module=' + escapeAttr(mod.id) + '">' +
+      '<div class="quick-tile-icon">' + icon('fileText') + '</div>' +
+      '<div>' +
+        '<div class="quick-tile-name">' + escapeHTML(localized(mod.name)) + '</div>' +
+        '<div class="quick-tile-count">' + count + ' ' + (t('filters.results') || 'doc.') + '</div>' +
+      '</div></a>';
+  }).join('');
+
+  // recent docs
+  ;(function() {
+    var recentIds = getRecentDocs();
+    var recentDocs = [];
+    recentIds.forEach(function(id) {
+      var d = APP.db.documents.find(function(x) { return x.id === id; });
+      if (d && isDocVisible(d)) recentDocs.push(d);
+    });
+    if (recentDocs.length) {
+      var recentGrid = document.getElementById('recent-grid');
+      recentGrid.innerHTML = recentDocs.slice(0, 6).map(compactDocCardHTML).join('');
+      recentGrid.querySelectorAll('.doc-preview-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) { e.stopPropagation(); addRecentDoc(btn.dataset.docId); openDocModal(btn.dataset.docId); });
+      });
+      recentGrid.querySelectorAll('.doc-fav-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) { e.stopPropagation(); var id = btn.dataset.docId; var isNowFav = toggleFavorite(id); btn.style.color = isNowFav ? 'var(--red-stamp)' : 'var(--ink-soft)'; });
+      });
+      recentGrid.querySelectorAll('.doc-card').forEach(function(card) {
+        card.addEventListener('click', function(e) { if (e.target.closest('button') || e.target.closest('a')) return; addRecentDoc(card.dataset.docId); openDocModal(card.dataset.docId); });
+      });
+    }
+  })();
+
+  // featured docs
+  var featuredGrid = document.getElementById('featured-grid');
+  if (featuredGrid) {
+    var featured = APP.db.documents
+      .filter(function(d) { return isDocVisible(d); })
+      .sort(function(a, b) { return b.downloads - a.downloads; })
+      .slice(0, 6);
+    renderDocGrid('featured-grid', featured);
+  }
+
+  // general docs — standalone docs without diploma
+  var generalGrid = document.getElementById('general-grid');
+  if (generalGrid) {
+    var generalDocs = APP.db.documents.filter(function(d) { return isDocVisible(d) && !d.diploma; });
+    if (generalDocs.length) {
+      generalGrid.innerHTML = generalDocs.slice(0, 6).map(compactDocCardHTML).join('');
+      generalGrid.querySelectorAll('.doc-preview-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) { e.stopPropagation(); addRecentDoc(btn.dataset.docId); openDocModal(btn.dataset.docId); });
+      });
+      generalGrid.querySelectorAll('.doc-fav-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) { e.stopPropagation(); var id = btn.dataset.docId; var isNowFav = toggleFavorite(id); btn.style.color = isNowFav ? 'var(--red-stamp)' : 'var(--ink-soft)'; });
+      });
+      generalGrid.querySelectorAll('.doc-card').forEach(function(card) {
+        card.addEventListener('click', function(e) { if (e.target.closest('button') || e.target.closest('a')) return; addRecentDoc(card.dataset.docId); openDocModal(card.dataset.docId); });
+      });
+    }
+  }
+
+  document.getElementById('hero-search-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const q = document.getElementById('hero-search-input').value.trim();
+    window.location.href = 'library.html' + (q ? '?q=' + encodeURIComponent(q) : '');
+  });
+}
+
+function toggleSemCategoryByName(semName) {
+  var gridId = 'sem-name-grid-' + semName.replace(/\s+/g, '-');
+  var subgrid = document.getElementById(gridId);
+  if (!subgrid) return;
+  var isHidden = subgrid.style.display === 'none' || !subgrid.style.display;
+  if (isHidden) {
+    var hiddenDocIds = new Set((function() { try { return JSON.parse(localStorage.getItem('fp_hidden_doc_ids') || '[]'); } catch { return []; } })());
+    var deletedDocIds = new Set((function() { try { return JSON.parse(localStorage.getItem('fp_deleted_doc_ids') || '[]'); } catch { return []; } })());
+    var hiddenDipIds = new Set((function() { try { return JSON.parse(localStorage.getItem('fp_hidden_diploma_ids') || '[]'); } catch { return []; } })());
+    // Helper: resolve semester name to id
+    function semIdsForName(name) {
+      var ids = [];
+      APP.db.diplomas.forEach(function(dip) {
+        (dip.semesters || []).forEach(function(s) {
+          if (localized(s.name) === name && ids.indexOf(s.id) < 0) ids.push(s.id);
+        });
+      });
+      return ids;
+    }
+    var matchingSemIds = semIdsForName(semName);
+    // Build diplomas that have docs under ANY semester matching this name
+    var dipDocs = {};
+    APP.db.documents.forEach(function(d) {
+      if (!hiddenDocIds.has(d.id) && !deletedDocIds.has(d.id) && d.diploma && matchingSemIds.indexOf(d.semester) >= 0) {
+        dipDocs[d.diploma] = (dipDocs[d.diploma] || 0) + 1;
+      }
+    });
+    subgrid.style.display = 'grid';
+    var html = '';
+    Object.keys(dipDocs).forEach(function(dipId) {
+      if (hiddenDipIds.has(dipId)) return;
+      var dip = APP.db.diplomas.find(function(d) { return d.id === dipId; });
+      if (!dip) return;
+      html += '<div class="level-category">' +
+        '<a class="quick-tile" href="javascript:void(0)" onclick="toggleSemDipCategoryByName(\'' + semName.replace(/'/g, "\\'") + '\',\'' + dipId + '\')" data-sem-dip="' + semName.replace(/\s+/g, '-') + '-' + dipId + '">' +
+          '<div class="quick-tile-icon">' + icon('book') + '</div>' +
+          '<div>' +
+            '<div class="quick-tile-name">' + escapeHTML(localized(dip.name)) + '</div>' +
+            '<div class="quick-tile-count">' + dipDocs[dipId] + ' ' + (t('filters.results') || 'doc.') + '</div>' +
+          '</div>' +
+          '<span class="expand-icon">' + icon('chevronDown') + '</span>' +
+        '</a>' +
+        '<div class="level-subgrid" id="sem-dip-docs-' + semName.replace(/\s+/g, '-') + '-' + dipId + '" style="display:none;"></div>' +
+      '</div>';
+    });
+    subgrid.innerHTML = html;
+  } else {
+    subgrid.style.display = 'none';
+  }
+  var tile = document.querySelector('[data-sem-name="' + semName.replace(/'/g, "&#39;") + '"]');
+  if (tile) tile.classList.toggle('expanded', isHidden);
+}
+
+function toggleSemDipCategoryByName(semName, dipId) {
+  var subgrid = document.getElementById('sem-dip-docs-' + semName.replace(/\s+/g, '-') + '-' + dipId);
+  if (!subgrid) return;
+  var isHidden = subgrid.style.display === 'none' || !subgrid.style.display;
+  if (isHidden) {
+    var hiddenDocIds = new Set((function() { try { return JSON.parse(localStorage.getItem('fp_hidden_doc_ids') || '[]'); } catch { return []; } })());
+    var deletedDocIds = new Set((function() { try { return JSON.parse(localStorage.getItem('fp_deleted_doc_ids') || '[]'); } catch { return []; } })());
+    function semIdsForName(name) {
+      var ids = [];
+      APP.db.diplomas.forEach(function(dip) {
+        (dip.semesters || []).forEach(function(s) {
+          if (localized(s.name) === name && ids.indexOf(s.id) < 0) ids.push(s.id);
+        });
+      });
+      return ids;
+    }
+    var matchingSemIds = semIdsForName(semName);
+    var docs = APP.db.documents.filter(function(d) {
+      return matchingSemIds.indexOf(d.semester) >= 0 && String(d.diploma) === dipId && !hiddenDocIds.has(d.id) && !deletedDocIds.has(d.id);
+    });
+    subgrid.style.display = 'grid';
+    subgrid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(260px, 1fr))';
+    subgrid.innerHTML = docs.length ? docs.map(compactDocCardHTML).join('') : '<p style="grid-column:1/-1;color:var(--ink-soft);padding:var(--space-3);">' + (t('admin.docsEmpty') || 'Aucun document') + '</p>';
+    subgrid.querySelectorAll('.doc-preview-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) { e.stopPropagation(); addRecentDoc(btn.dataset.docId); openDocModal(btn.dataset.docId); });
+    });
+    subgrid.querySelectorAll('.doc-fav-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) { e.stopPropagation(); var id = btn.dataset.docId; var isNowFav = toggleFavorite(id); btn.style.color = isNowFav ? 'var(--red-stamp)' : 'var(--ink-soft)'; });
+    });
+    subgrid.querySelectorAll('.doc-card').forEach(function(card) {
+      card.addEventListener('click', function(e) { if (e.target.closest('button') || e.target.closest('a')) return; addRecentDoc(card.dataset.docId); openDocModal(card.dataset.docId); });
+    });
+  } else {
+    subgrid.style.display = 'none';
+  }
+  var tile = document.querySelector('[data-sem-dip="' + semName.replace(/\s+/g, '-') + '-' + dipId + '"]');
+  if (tile) tile.classList.toggle('expanded', isHidden);
+}
+
+async function init() {
+  await loadData();
+  applyLocalDocOverrides();
+  applyStructuralOverrides();
+  applyLangToDocument();
+  try { render(); } catch (e) { console.error('[render]', e); }
+  wireLayoutEvents();
+}
+
+function onLangChange() { if (typeof render === 'function') { try { render(); } catch (e) { console.error('[render]', e); } wireLayoutEvents(); } }
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,325 @@
+/* ============================================================
+   INRY-BIBLIO — DESIGN TOKENS
+   Direction: "Dossier scolaire" — cahier, tampon administratif,
+   papier kraft, vert/or sobre. Pas de bleu corporate edtech.
+   ============================================================ */
+
+:root {
+  /* --- Palette --- */
+  --paper: #f3ead8;          /* fond papier kraft clair */
+  --paper-dark: #e8dcc2;
+  --ink: #2a2620;            /* texte principal, encre noire/brune */
+  --ink-soft: #5c5446;
+  --kraft: #c9a96b;          /* bordures, lignes de cahier */
+  --kraft-line: #d8c49a;
+  --green: #1f6f50;          /* vert "tampon officiel" */
+  --green-dark: #154d38;
+  --gold: #b8862f;           /* or / sceau */
+  --gold-light: #d9ab52;
+  --red-stamp: #9c3b2e;      /* rouge tampon */
+  --cream-card: #fbf6ea;
+  --surface: #ffffff;
+  --shadow-color: rgba(42, 38, 32, 0.18);
+
+  /* --- Type scale --- */
+  --font-display: 'Fraunces', 'Amiri', serif;
+  --font-body: 'Source Sans 3', 'Noto Sans Arabic', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-md: 1.125rem;
+  --fs-lg: 1.375rem;
+  --fs-xl: 1.875rem;
+  --fs-2xl: 2.5rem;
+  --fs-3xl: 3.5rem;
+
+  /* --- Spacing --- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-8: 3rem;
+  --space-10: 4rem;
+  --space-12: 6rem;
+
+  /* --- Misc --- */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --border-w: 1.5px;
+  --transition: 180ms cubic-bezier(0.4, 0, 0.2, 1);
+  --max-width: 1240px;
+}
+
+[data-theme="dark"] {
+  --paper: #1b1812;
+  --paper-dark: #15120e;
+  --ink: #ede4d2;
+  --ink-soft: #b8ab8f;
+  --kraft: #4a3f2a;
+  --kraft-line: #382f20;
+  --green: #4caf83;
+  --green-dark: #2e7a58;
+  --gold: #d9ab52;
+  --gold-light: #e8c785;
+  --red-stamp: #c25646;
+  --cream-card: #241f17;
+  --surface: #211c14;
+  --shadow-color: rgba(0, 0, 0, 0.45);
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+h1, h2, h3, h4, p { margin: 0; }
+input, select, textarea, button { font-size: inherit; }
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  line-height: 1.55;
+  transition: background var(--transition), color var(--transition);
+  background-image:
+    radial-gradient(ellipse at top left, rgba(184, 134, 47, 0.05), transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(31, 111, 80, 0.05), transparent 50%);
+}
+
+/* RTL handling */
+html[dir="rtl"] body { font-family: 'Noto Sans Arabic', 'Source Sans 3', sans-serif; }
+html[dir="rtl"] .ltr-only { direction: ltr; unicode-bidi: isolate; }
+
+:focus-visible {
+  outline: 2.5px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ============================================================
+   PAPER TEXTURE / NOTEBOOK LINES (signature element)
+   ============================================================ */
+.paper-texture {
+  background-image:
+    repeating-linear-gradient(
+      transparent, transparent 27px,
+      var(--kraft-line) 27px, var(--kraft-line) 28px
+    );
+  background-position: 0 6px;
+}
+
+.stamp {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  border: 2px solid var(--green);
+  color: var(--green);
+  border-radius: 50px;
+  padding: var(--space-1) var(--space-4);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  letter-spacing: 0.04em;
+  transform: rotate(-2deg);
+  background: transparent;
+}
+
+[data-theme="dark"] .stamp { color: var(--green); border-color: var(--green); }
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+.font-display {
+  font-family: var(--font-display);
+}
+
+h1, h2, h3, .heading {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+html[dir="rtl"] h1, html[dir="rtl"] h2, html[dir="rtl"] h3, html[dir="rtl"] .heading {
+  font-family: 'Amiri', 'Noto Sans Arabic', serif;
+  letter-spacing: 0;
+}
+
+.eyebrow {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+  font-weight: 700;
+}
+html[dir="rtl"] .eyebrow { text-transform: none; letter-spacing: 0.02em; }
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-5);
+}
+
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  background: var(--green);
+  color: #fff;
+  padding: var(--space-2) var(--space-4);
+  z-index: 200;
+}
+.skip-link:focus { left: var(--space-3); top: var(--space-3); }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--paper);
+  border-bottom: var(--border-w) solid var(--kraft);
+  backdrop-filter: blur(6px);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding: var(--space-3) 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.brand-seal {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brand-name {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.brand-tagline {
+  font-size: var(--fs-xs);
+  color: var(--ink-soft);
+}
+
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.nav-link {
+  position: relative;
+  padding: var(--space-2) var(--space-3);
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  color: var(--ink-soft);
+  border-radius: var(--radius-sm);
+  transition: color var(--transition), background var(--transition);
+  white-space: nowrap;
+}
+
+.nav-link:hover { color: var(--green); background: rgba(31, 111, 80, 0.08); }
+.nav-link.active { color: var(--green); }
+.nav-link.active::after {
+  content: "";
+  position: absolute;
+  left: var(--space-3);
+  right: var(--space-3);
+  bottom: -1px;
+  height: 2px;
+  background: var(--green);
+  border-radius: 2px;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  border: var(--border-w) solid var(--kraft);
+  background: var(--surface);
+  color: var(--ink);
+  transition: border-color var(--transition), transform var(--transition);
+}
+.icon-btn:hover { border-color: var(--green); transform: translateY(-1px); }
+.icon-btn svg { width: 18px; height: 18px; }
+
+.lang-switch {
+  display: flex;
+  border: var(--border-w) solid var(--kraft);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.lang-btn {
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-weight: 700;
+  font-size: var(--fs-xs);
+  border: none;
+  transition: background var(--transition), color var(--transition);
+}
+.lang-btn.active { background: var(--green); color: #fff; }
+.lang-btn:not(.active):hover { background: var(--paper-dark); }
+
+.mobile-nav-toggle { display: none; }
+
+@media (max-width: 900px) {
+  .main-nav { display: none; }
+  .mobile-nav-toggle { display: inline-flex; }
+}

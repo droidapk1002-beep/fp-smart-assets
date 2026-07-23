@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://api.openai.com https://api.anthropic.com https://generativelanguage.googleapis.com https://api.mymemory.translated.net; frame-src https://drive.google.com; object-src 'none'; base-uri 'self';">
+<script>window.addEventListener('pageshow',function(e){if(e.persisted)location.reload();});</script>
+<title>Assistant IA — FP-SMART</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/assistant-admin.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Aller au contenu</a>
+<div id="header-root"></div>
+
+<main class="page-content" style="max-width:800px;margin:0 auto;padding:var(--space-5);">
+  <section style="text-align:center;margin-bottom:var(--space-5);">
+    <h1 data-i18n="assistant.title" style="font-size:var(--fs-xl);"></h1>
+    <p data-i18n="assistant.subtitle" style="color:var(--ink-soft);"></p>
+    <div style="margin-top:var(--space-2);">
+      <select id="key-select" class="filter-select" style="max-width:400px;"></select>
+      <span id="provider-label" class="provider-pill"></span>
+    </div>
+  </section>
+
+  <div id="chat-output" class="chat-scroll" style="height:400px;overflow-y:auto;border:2px solid var(--kraft-line);border-radius:var(--radius-md);padding:var(--space-3);margin-bottom:var(--space-3);background:var(--surface);"></div>
+
+  <form id="chat-form" class="chat-input-row">
+    <textarea id="chat-input" rows="2" dir="auto" data-i18n-placeholder="assistant.placeholder" style="flex:1;padding:var(--space-2)var(--space-3);border:2px solid var(--kraft);border-radius:var(--radius-md);font-size:var(--fs-sm);background:var(--surface);color:var(--ink);resize:vertical;" required></textarea>
+    <button class="btn btn-primary" type="submit" style="padding:var(--space-2)var(--space-4);">
+      <span data-i18n="assistant.send"></span>
+    </button>
+  </form>
+  <div style="display:flex;justify-content:flex-end;">
+    <button class="btn btn-ghost btn-sm" id="clear-chat-btn" data-i18n="assistant.clear"></button>
+  </div>
+</main>
+
+<div id="footer-root"></div>
+<div id="global-toast" class="toast"></div>
+
+<script src="js/icons.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/assistant.js"></script>
+<script>
+async function init() {
+  try {
+    await loadData();
+    applyLangToDocument();
+    document.title = t('assistant.title') + ' — ' + t('siteName');
+    document.getElementById('header-root').innerHTML = renderHeader('assistant');
+    document.getElementById('footer-root').innerHTML = renderFooter();
+    translateStaticDOM();
+    wireLayoutEvents();
+    initAssistant();
+  } catch(e) {
+    console.error('[init]', e);
+    var d = document.createElement('div');
+    d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:red;color:#fff;padding:8px;z-index:9999;font-size:14px;';
+    d.textContent = 'Init Error: ' + e.message;
+    document.body.prepend(d);
+  }
+}
+
+function onLangChange() { init(); }
+
+init();
+</script>
+</body>
+</html>
