@@ -66,6 +66,22 @@ async function loadData() {
       branch: gs.branch || 'main',
       path: gs.path || 'repo/data/db.json'
     }));
+    if (gs.patKey) localStorage.setItem('fp_gh_pat_key', gs.patKey);
+    if (gs.encryptedPAT && gs.patKey) {
+      try {
+        var keyBytes = Uint8Array.from(atob(gs.patKey), function(c) { return c.charCodeAt(0); });
+        var cryptoKey = await crypto.subtle.importKey('raw', keyBytes, 'AES-GCM', false, ['decrypt']);
+        var iv = Uint8Array.from(atob(gs.encryptedPAT.iv), function(c) { return c.charCodeAt(0); });
+        var data = Uint8Array.from(atob(gs.encryptedPAT.data), function(c) { return c.charCodeAt(0); });
+        var dec = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, cryptoKey, data);
+        var pat = new TextDecoder().decode(dec);
+        if (pat) {
+          var savedCfg = JSON.parse(localStorage.getItem('fp_github_sync') || '{}');
+          savedCfg.pat = pat;
+          localStorage.setItem('fp_github_sync', JSON.stringify(savedCfg));
+        }
+      } catch(e) { console.warn('PAT decrypt from db.json failed:', e); }
+    }
     if (gs.autoPush) localStorage.setItem('fp_github_auto_push', 'true');
   }
   APP.i18n = await i18nRes.json();

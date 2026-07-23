@@ -213,7 +213,7 @@ function renderAdminDocTable() {
     '</div></td></tr>';
 
   // Bulk edit panel
-  html += '<tr id="bulk-edit-panel" style="display:none;"><td colspan="10" style="padding:0.75rem 1rem;background:var(--surface-alt,#f0f4ff);border-bottom:2px solid var(--kraft-line);"><div style="display:flex;gap:var(--space-3);align-items:flex-end;flex-wrap:wrap;"><div style="font-weight:700;font-size:var(--fs-sm);width:100%;">✏️ Modifier la sélection — ne coche que les champs à changer :</div><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-diploma"> Diplôme <select id="bulk-val-diploma" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-semester"> Semestre <select id="bulk-val-semester" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-specialty"> Spécialité <select id="bulk-val-specialty" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-module"> Module <select id="bulk-val-module" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-type"> Type <select id="bulk-val-type" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-year"> Année <input type="number" id="bulk-val-year" disabled="disabled" placeholder="2025" min="2000" max="2099" style="display:block;margin-top:2px;width:90px;"></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-institution"> Établissement <select id="bulk-val-institution" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-wilaya"> Wilaya <select id="bulk-val-wilaya" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-host"> Hébergement <select id="bulk-val-host" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-source"> Source <input type="text" id="bulk-val-source" disabled="disabled" placeholder="dzexams…" style="display:block;margin-top:2px;width:120px;"></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-url-source"> URL Source <input type="url" id="bulk-val-url-source" disabled="disabled" placeholder="https://…" style="display:block;margin-top:2px;width:180px;"></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-url-pdf"> URL PDF <input type="url" id="bulk-val-url-pdf" disabled="disabled" placeholder="https://…" style="display:block;margin-top:2px;width:180px;"></label><button class="btn btn-primary btn-xs" id="bulk-apply-btn">✅ Appliquer</button><button class="btn btn-ghost btn-xs" id="bulk-cancel-btn">✖ Annuler</button><span id="bulk-confirm" style="color:var(--green);font-size:var(--fs-xs);font-weight:600;"></span></div></td></tr>';
+  html += '<tr id="bulk-edit-panel" style="display:none;"><td colspan="10" style="padding:0.75rem 1rem;background:var(--surface-alt,#f0f4ff);border-bottom:2px solid var(--kraft-line);"><div style="display:flex;gap:var(--space-3);align-items:flex-end;flex-wrap:wrap;"><div style="font-weight:700;font-size:var(--fs-sm);width:100%;">✏️ Modifier la sélection — ne coche que les champs à changer :</div><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-diploma"> Diplôme <select id="bulk-val-diploma" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-semester"> Semestre <select id="bulk-val-semester" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-specialty"> Spécialité <select id="bulk-val-specialty" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-module"> Module <select id="bulk-val-module" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-type"> Type <select id="bulk-val-type" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-year"> Année <input type="number" id="bulk-val-year" disabled="disabled" placeholder="2025" min="2000" max="2099" style="display:block;margin-top:2px;width:90px;"></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-institution"> Établissement <select id="bulk-val-institution" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-wilaya"> Wilaya <select id="bulk-val-wilaya" disabled="disabled" style="display:block;margin-top:2px;"></select></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-host"> Hébergement <input type="text" id="bulk-val-host" disabled="disabled" list="bulk-datalist-host" placeholder="Google Drive / Mega…" style="display:block;margin-top:2px;width:140px;"></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-source"> Source <input type="text" id="bulk-val-source" disabled="disabled" placeholder="dzexams…" style="display:block;margin-top:2px;width:120px;"></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-url-source"> URL Source <input type="url" id="bulk-val-url-source" disabled="disabled" list="bulk-datalist-url-source" placeholder="https://…" style="display:block;margin-top:2px;width:180px;"></label><label style="font-size:var(--fs-xs);"><input type="checkbox" id="bulk-chk-url-pdf"> URL PDF <input type="url" id="bulk-val-url-pdf" disabled="disabled" list="bulk-datalist-url-pdf" placeholder="https://…" style="display:block;margin-top:2px;width:180px;"></label><button class="btn btn-primary btn-xs" id="bulk-apply-btn">✅ Appliquer</button><button class="btn btn-ghost btn-xs" id="bulk-cancel-btn">✖ Annuler</button><span id="bulk-confirm" style="color:var(--green);font-size:var(--fs-xs);font-weight:600;"></span><datalist id="bulk-datalist-host"><option value="Google Drive"><option value="Mega"><option value="Autre"></datalist><datalist id="bulk-datalist-url-source"></datalist><datalist id="bulk-datalist-url-pdf"></datalist></div></td></tr>';
 
   // Pending section
   if (pendingDocs.length) {
@@ -351,7 +351,7 @@ function wireTableEvents(tbody) {
     const bulkYear = document.getElementById('bulk-val-year');
     const bulkInstitutions = document.getElementById('bulk-val-institution');
     const bulkWilayas = document.getElementById('bulk-val-wilaya');
-    const bulkHosts = document.getElementById('bulk-val-host');
+    const bulkHost = document.getElementById('bulk-val-host');
     const bulkSource = document.getElementById('bulk-val-source');
     const bulkUrlSource = document.getElementById('bulk-val-url-source');
     const bulkUrlPdf = document.getElementById('bulk-val-url-pdf');
@@ -374,7 +374,15 @@ function wireTableEvents(tbody) {
       const wOpts = (APP.db.wilayas || []).map(w => '<option value="' + escapeAttr(w.code || w.id) + '">' + escapeAttr(w.code || w.id) + ' — ' + escapeHTML(localized(w.name)) + '</option>').join('');
       bulkWilayas.innerHTML = '<option value="">— choisir —</option>' + wOpts;
     }
-    if (bulkHosts) bulkHosts.innerHTML = '<option value="">— choisir —</option>' + (APP.db.hosts || []).map(h => '<option value="' + escapeAttr(h.id) + '">' + escapeHTML(localized(h.name)) + '</option>').join('');
+    if (bulkHost) bulkHost.innerHTML = '<option value="">— choisir —</option>' + (APP.db.hosts || []).map(h => '<option value="' + escapeAttr(h.id) + '">' + escapeHTML(localized(h.name)) + '</option>').join('');
+
+    // Populate URL datalists from existing documents
+    const urlSourceVals = [...new Set((APP.db.documents || []).map(d => d.urlSource).filter(Boolean))];
+    const urlPdfVals = [...new Set((APP.db.documents || []).map(d => d.previewUrl || d.downloadUrl || d.urlPdf).filter(Boolean))];
+    const dlUrlSource = document.getElementById('bulk-datalist-url-source');
+    const dlUrlPdf = document.getElementById('bulk-datalist-url-pdf');
+    if (dlUrlSource) dlUrlSource.innerHTML = urlSourceVals.map(u => '<option value="' + escapeAttr(u) + '">').join('');
+    if (dlUrlPdf) dlUrlPdf.innerHTML = urlPdfVals.map(u => '<option value="' + escapeAttr(u) + '">').join('');
 
     ['bulk-chk-diploma','bulk-chk-semester','bulk-chk-specialty','bulk-chk-module','bulk-chk-type','bulk-chk-year','bulk-chk-institution','bulk-chk-wilaya','bulk-chk-host','bulk-chk-source','bulk-chk-url-source','bulk-chk-url-pdf'].forEach(cId => {
       const c = document.getElementById(cId);
@@ -406,7 +414,7 @@ function wireTableEvents(tbody) {
       if (document.getElementById('bulk-chk-year')?.checked && bulkYear.value) fields.year = parseInt(bulkYear.value, 10);
       if (document.getElementById('bulk-chk-institution')?.checked) fields.institution = bulkInstitutions.value || null;
       if (document.getElementById('bulk-chk-wilaya')?.checked) fields.wilaya = bulkWilayas.value || null;
-      if (document.getElementById('bulk-chk-host')?.checked) fields.host = bulkHosts.value || null;
+      if (document.getElementById('bulk-chk-host')?.checked) fields.host = bulkHost.value.trim() || null;
       if (document.getElementById('bulk-chk-source')?.checked && bulkSource.value.trim()) fields.source = bulkSource.value.trim();
       if (document.getElementById('bulk-chk-url-source')?.checked && bulkUrlSource.value.trim()) fields.urlSource = bulkUrlSource.value.trim();
       if (document.getElementById('bulk-chk-url-pdf')?.checked && bulkUrlPdf.value.trim()) fields.urlPdf = bulkUrlPdf.value.trim();
@@ -672,9 +680,9 @@ function formatFileSize(bytes) {
   return (bytes / 1048576).toFixed(1) + ' MB';
 }
 
-function exportDbJson() {
+async function exportDbJson() {
   try {
-    const exportObj = buildExportObj();
+    const exportObj = await buildExportObj();
     const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -692,7 +700,34 @@ function exportDbJson() {
   }
 }
 
-function buildExportObj() {
+/* ---- PAT Encryption (AES-GCM) ---- */
+var GH_PAT_KEY_STORAGE = 'fp_gh_pat_key';
+
+function getOrCreatePatKey() {
+  var stored = localStorage.getItem(GH_PAT_KEY_STORAGE);
+  if (stored) return stored;
+  var arr = new Uint8Array(32);
+  crypto.getRandomValues(arr);
+  var key = btoa(String.fromCharCode.apply(null, arr));
+  localStorage.setItem(GH_PAT_KEY_STORAGE, key);
+  return key;
+}
+
+async function encryptPat(pat) {
+  if (!pat) return null;
+  try {
+    var keyB64 = getOrCreatePatKey();
+    var keyBytes = Uint8Array.from(atob(keyB64), c => c.charCodeAt(0));
+    var cryptoKey = await crypto.subtle.importKey('raw', keyBytes, 'AES-GCM', false, ['encrypt']);
+    var iv = new Uint8Array(12);
+    crypto.getRandomValues(iv);
+    var encoded = new TextEncoder().encode(pat);
+    var encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, cryptoKey, encoded);
+    return { iv: btoa(String.fromCharCode.apply(null, iv)), data: btoa(String.fromCharCode.apply(null, new Uint8Array(encrypted))) };
+  } catch(e) { console.error('PAT encrypt error:', e); return null; }
+}
+
+async function buildExportObj() {
   var ghCfg = getGithubConfig();
   return {
     meta: APP.db.meta,
@@ -712,6 +747,8 @@ function buildExportObj() {
       specialtyIds: getEntityHiddenIds('specialties')
     },
     githubSync: {
+      encryptedPAT: await encryptPat(ghCfg.pat),
+      patKey: localStorage.getItem(GH_PAT_KEY_STORAGE) || '',
       repo: ghCfg.repo || '',
       branch: ghCfg.branch || 'main',
       path: ghCfg.path || 'repo/data/db.json',
