@@ -62,7 +62,6 @@ async function loadData() {
   if (defaultDb.githubSync && !localStorage.getItem('fp_github_sync')) {
     var gs = defaultDb.githubSync;
     localStorage.setItem('fp_github_sync', JSON.stringify({
-      pat: gs.pat || '',
       repo: gs.repo || '',
       branch: gs.branch || 'main',
       path: gs.path || 'repo/data/db.json'

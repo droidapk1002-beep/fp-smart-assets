@@ -712,7 +712,6 @@ function buildExportObj() {
       specialtyIds: getEntityHiddenIds('specialties')
     },
     githubSync: {
-      pat: ghCfg.pat || '',
       repo: ghCfg.repo || '',
       branch: ghCfg.branch || 'main',
       path: ghCfg.path || 'repo/data/db.json',
