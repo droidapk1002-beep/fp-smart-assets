@@ -1381,7 +1381,7 @@ function wireImportUI() {
 }
 
 function generateManifestJSON() {
-  var docs = getLocalDocs();
+  var docs = (APP.db && APP.db.documents) || getLocalDocs();
   var items = docs.map(function(d) {
     return {
       titre: d.title ? (d.title.ar || d.title.fr || d.title.en || '') : '',
