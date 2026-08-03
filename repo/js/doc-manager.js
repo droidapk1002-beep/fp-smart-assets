@@ -565,16 +565,27 @@ function wireDocManagerEvents() {
   const previewUrl = document.getElementById('doc-form-preview-url');
   const sizeField = document.getElementById('doc-form-size');
   const pagesField = document.getElementById('doc-form-pages');
+  async function autoDetectPdfFields(field) {
+    const url = (field && field.value.trim()) || '';
+    if (!url) return;
+    try {
+      const meta = await detectPdfMeta(url);
+      if (!meta) return;
+      if (!sizeField.value && meta.size) sizeField.value = meta.size;
+      if (!pagesField.value && meta.pages > 0) pagesField.value = String(meta.pages);
+    } catch {}
+  }
   [previewUrl, document.getElementById('doc-form-download-url')].forEach(field => {
     if (!field) return;
-    field.addEventListener('paste', () => setTimeout(() => {
-      if (!sizeField.value) tryFetchFileSize(field.value.trim()).then(s => { if (s) sizeField.value = s; });
-      if (!pagesField.value) tryFetchPageCount(field.value.trim()).then(p => { if (p) pagesField.value = String(p); });
-    }, 100));
+    field.addEventListener('paste', () => setTimeout(() => autoDetectPdfFields(field), 150));
+    field.addEventListener('blur', () => {
+      if (!sizeField.value || !pagesField.value) autoDetectPdfFields(field);
+    });
   });
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (!sizeField.value || !pagesField.value) await autoDetectPdfFields(previewUrl);
     const titleFrVal = document.getElementById('doc-form-title-fr').value.trim();
     const previewUrlVal = document.getElementById('doc-form-preview-url').value.trim();
     const downloadUrlVal = document.getElementById('doc-form-download-url').value.trim();
@@ -650,28 +661,52 @@ async function translateText(text, targetLang) {
   } catch { return text; }
 }
 
-async function tryFetchFileSize(url) {
-  if (!url) return null;
-  try {
-    const res = await fetch(url, { method: 'HEAD' });
-    const len = res.headers.get('Content-Length');
-    if (len && parseInt(len) > 0) return formatFileSize(parseInt(len));
-  } catch {}
-  return null;
+// Détection best-effort (taille + nombre de pages réel) d'un PDF depuis son URL, 100 % côté
+// navigateur (aucun backend). Normalise les liens Google Drive, lit la taille via HEAD puis
+// télécharge le fichier pour compter les pages avec pdfjs-dist (CDN). En cas d'échec (CORS,
+// réseau), on retombe sur le /Count lu dans l'en-tête du PDF. pages vaut 0 si le comptage a
+// échoué (jamais d'estimation par taille, qui serait trompeuse).
+function normalizePdfUrl(url) {
+  const u = url.trim();
+  const gdMatch = u.match(/drive\.google\.com\/file\/d\/([^/?#&]+)/);
+  if (gdMatch) return 'https://drive.google.com/uc?export=download&id=' + gdMatch[1];
+  return u;
 }
 
-async function tryFetchPageCount(url) {
-  if (!url) return null;
+async function detectPdfMeta(url) {
+  if (!url || !url.trim()) return null;
+  const target = normalizePdfUrl(url);
+  let bytes = null;
   try {
-    const res = await fetch(url, { headers: { Range: 'bytes=0-15360' } });
-    const text = await res.text();
-    const pagesMatch = text.match(/\/Type\s*\/Pages[^>]*\/Count\s+(\d+)/);
-    if (pagesMatch && pagesMatch[1]) {
-      const count = parseInt(pagesMatch[1], 10);
-      if (count > 0 && count < 500) return count;
+    const headRes = await fetch(target, { method: 'HEAD', signal: AbortSignal.timeout(15000) });
+    const len = headRes.headers.get('Content-Length');
+    if (len && parseInt(len, 10) > 0) bytes = parseInt(len, 10);
+  } catch {}
+  let pages = 0;
+  try {
+    const res = await fetch(target, { signal: AbortSignal.timeout(25000) });
+    if (res.ok) {
+      const buf = await res.arrayBuffer();
+      if (!bytes) bytes = buf.byteLength;
+      if (buf.byteLength >= 5 && new TextDecoder('latin1').decode(buf.slice(0, 5)) === '%PDF-') {
+        try {
+          const pdfjs = await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@6.2.108/legacy/build/pdf.min.mjs');
+          const doc = await pdfjs.getDocument({ data: buf, disableWorker: true, isEvalSupported: false }).promise;
+          if (doc && typeof doc.numPages === 'number' && doc.numPages > 0) pages = doc.numPages;
+          if (typeof doc.destroy === 'function') doc.destroy();
+        } catch {
+          const text = new TextDecoder('latin1').decode(buf.slice(0, 16384));
+          const m = text.match(/\/Type\s*\/Pages[^>]*\/Count\s+(\d+)/);
+          if (m && m[1]) {
+            const c = parseInt(m[1], 10);
+            if (c > 0 && c < 500) pages = c;
+          }
+        }
+      }
     }
   } catch {}
-  return null;
+  if (!bytes) return null;
+  return { size: formatFileSize(bytes), pages };
 }
 
 function formatFileSize(bytes) {
