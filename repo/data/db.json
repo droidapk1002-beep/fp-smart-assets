@@ -798,39 +798,6 @@
       "tags": []
     },
     {
-      "id": "doc-0006",
-      "title": {
-        "fr": "Leçon 01 - L'Information digitale",
-        "ar": "الدرس 01 - المعلومات الرقمية",
-        "en": "Lesson 01 - Digital Information"
-      },
-      "diploma": "bts",
-      "semester": "bts-s1",
-      "specialty": "informatique",
-      "module": "mod-SM",
-      "type": "cours",
-      "year": 2026,
-      "institution": "insfp-alger",
-      "wilaya": "Alger",
-      "description": {
-        "fr": "L'Information digitale",
-        "ar": "",
-        "en": ""
-      },
-      "fileType": "pdf",
-      "pages": 1,
-      "size": "125.7 KB",
-      "previewUrl": "https://drive.google.com/file/d/1BVSjJJMaztsfQ_ogAnMUyeC694BmqR47/preview",
-      "downloadUrl": "https://drive.google.comuc?export=download&id=1BVSjJJMaztsfQ_ogAnMUyeC694BmqR47",
-      "host": "drive",
-      "source": "INSFP ALGER",
-      "urlSource": "",
-      "urlPdf": "",
-      "downloads": 0,
-      "rating": 0,
-      "tags": []
-    },
-    {
       "id": "doc-0007",
       "title": {
         "fr": "Leçon 02- Unité Centrale de traitement",
@@ -1291,6 +1258,39 @@
       "downloads": 0,
       "rating": 0,
       "tags": []
+    },
+    {
+      "id": "doc-0006",
+      "title": {
+        "fr": "Leçon 01 - L'Information digitale",
+        "ar": "الدرس 01 - المعلومات الرقمية",
+        "en": "Lesson 01 - Digital Information"
+      },
+      "diploma": "bts",
+      "semester": "bts-s1",
+      "specialty": "informatique",
+      "module": "mod-SM",
+      "type": "cours",
+      "year": 2026,
+      "institution": "insfp-alger",
+      "wilaya": "Alger",
+      "description": {
+        "fr": "L'Information digitale",
+        "ar": "",
+        "en": ""
+      },
+      "fileType": "pdf",
+      "pages": 1,
+      "size": "125.7 KB",
+      "previewUrl": "https://drive.google.com/file/d/1BVSjJJMaztsfQ_ogAnMUyeC694BmqR47/view?usp=drive_link",
+      "downloadUrl": "https://drive.google.comuc?export=download&id=1BVSjJJMaztsfQ_ogAnMUyeC694BmqR47",
+      "host": "drive",
+      "source": "INSFP ALGER",
+      "urlSource": "",
+      "urlPdf": "",
+      "downloads": 0,
+      "rating": 0,
+      "tags": []
     }
   ],
   "hidden": {
@@ -1347,8 +1347,8 @@
   },
   "githubSync": {
     "encryptedPAT": {
-      "iv": "F5GFOhumuu+Gy0eR",
-      "data": "V9OQQQFN+7aAT3S2pXqEvOq6FxxWe9luI+O0tXS8JcqZ0sEkEOnjjNqpgwgEeiVApYRoGSl8DcQ="
+      "iv": "lfk9kamdroXOlR0N",
+      "data": "+6Pt6X5fYBahCfGgFLBkVJBAm5EdZN778OMF+cLqxpSRX0Z41TmpxoDPjebs9e7lRv9ZdDj2YaM="
     },
     "patKey": "pGZ9Tm+zW6tV+v64hQXKXIAWc4aJWzG4b4NEArhcwx8=",
     "repo": "droidapk1002-beep/fp-smart-assets",
