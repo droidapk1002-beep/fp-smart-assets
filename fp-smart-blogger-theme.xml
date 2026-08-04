@@ -6296,7 +6296,7 @@ async function translateText(text, targetLang) {
 // navigateur (aucun backend). Google Drive : l'URL de téléchargement uc?export=download
 // renvoie 403 aux fetchs cross-origin du navigateur, donc on lit la taille RÉELLE du fichier
 // dans la page viewer (/preview, lisible en CORS) via itemJson. Les pages d'un PDF Drive ne
-// sont pas comptables côté navigateur (téléchargement bloqué) : pages vaut 0. Sinon : HEAD
+// sont lues par requêtes Range sur drive.usercontent.google.com (comptage PDF intégré). Sinon : HEAD
 // pour la taille puis téléchargement + pdfjs-dist (CDN) pour les pages, avec repli sur le
 // /Count de l'en-tête du PDF. pages vaut 0 si le comptage a échoué (jamais d'estimation).
 function normalizePdfUrl(url) {
@@ -6319,13 +6319,17 @@ async function detectPdfMeta(url) {
   if (!url || !url.trim()) return null;
   const gdMatch = url.trim().match(/drive\.google\.com\/file\/d\/([^/?#&]+)/);
   if (gdMatch) {
+    const fileId = gdMatch[1];
     try {
-      const res = await fetch('https://drive.google.com/file/d/' + gdMatch[1] + '/preview', { signal: AbortSignal.timeout(20000) });
+      const res = await fetch('https://drive.google.com/file/d/' + fileId + '/preview', { signal: AbortSignal.timeout(20000) });
       if (res.ok) {
         const bytes = extractDriveSizeFromViewerHtml(await res.text());
-        if (bytes) return { size: formatFileSize(bytes), pages: 0 };
+        if (bytes) {
+          const pages = await countDrivePdfPages(fileId);
+          return { size: formatFileSize(bytes), pages };
+        }
       }
-    } catch {}
+    } catch { /* ignore CORS/network errors */ }
     return null;
   }
   const target = normalizePdfUrl(url);
@@ -6334,7 +6338,7 @@ async function detectPdfMeta(url) {
     const headRes = await fetch(target, { method: 'HEAD', signal: AbortSignal.timeout(15000) });
     const len = headRes.headers.get('Content-Length');
     if (len && parseInt(len, 10) > 0) bytes = parseInt(len, 10);
-  } catch {}
+  } catch { /* ignore CORS/network errors */ }
   let pages = 0;
   try {
     const res = await fetch(target, { signal: AbortSignal.timeout(25000) });
@@ -6357,9 +6361,282 @@ async function detectPdfMeta(url) {
         }
       }
     }
-  } catch {}
+  } catch { /* ignore CORS/network errors */ }
   if (!bytes) return null;
   return { size: formatFileSize(bytes), pages };
+}
+
+function pdfInflateRaw(data) {
+  data = new Uint8Array(data);
+  const out = [];
+  let bitPos = 0;
+  function bits(n) {
+    let v = 0;
+    for (let i = 0; i < n; i++) {
+      const byteIdx = bitPos >> 3, bitIdx = bitPos & 7;
+      if (byteIdx < data.length) v |= ((data[byteIdx] >> bitIdx) & 1) << i;
+      bitPos++;
+    }
+    return v;
+  }
+  function buildCanonical(lengths) {
+    const maxBits = Math.max(0, ...lengths);
+    const counts = new Array(maxBits + 1).fill(0);
+    for (const l of lengths) if (l > 0) counts[l]++;
+    const first = new Array(maxBits + 1).fill(0);
+    let code = 0;
+    for (let l = 1; l <= maxBits; l++) { code = (code + counts[l - 1]) << 1; first[l] = code; }
+    const symbolsByLen = new Array(maxBits + 1).fill(null).map(() => []);
+    for (let sym = 0; sym < lengths.length; sym++) { const l = lengths[sym]; if (l > 0) symbolsByLen[l].push(sym); }
+    return { counts, first, symbolsByLen, maxBits };
+  }
+  function decodeSym(t) {
+    let code = 0, first = 0;
+    for (let l = 1; l <= t.maxBits; l++) {
+      code |= bits(1);
+      const c = t.counts[l];
+      if (code - first < c) return t.symbolsByLen[l][code - first];
+      first = (first + c) << 1;
+      code <<= 1;
+    }
+    throw new Error('bad huffman code');
+  }
+  const LEN_BASE = [3,4,5,6,7,8,9,10,11,13,15,17,19,23,27,31,35,43,51,59,67,83,99,115,131,163,195,227,258];
+  const LEN_EXT  = [0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0];
+  const DIST_BASE = [1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577];
+  const DIST_EXT  = [0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13];
+  const FIX_LEN = new Array(288);
+  for (let i = 0; i < 144; i++) FIX_LEN[i] = 8;
+  for (let i = 144; i < 256; i++) FIX_LEN[i] = 9;
+  for (let i = 256; i < 280; i++) FIX_LEN[i] = 7;
+  for (let i = 280; i < 288; i++) FIX_LEN[i] = 8;
+  const FIX_DIST = new Array(30).fill(5);
+  const CLEN_ORDER = [16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15];
+  let last = false;
+  do {
+    last = bits(1) === 1;
+    const btype = bits(2);
+    if (btype === 0) {
+      bitPos = (bitPos + 7) & ~7;
+      const len = bits(16), nlen = bits(16);
+      if ((len ^ 0xFFFF) !== nlen) throw new Error('stored block length mismatch');
+      const base = bitPos >> 3;
+      for (let i = 0; i < len; i++) out.push(data[base + i]);
+      bitPos += len * 8;
+      continue;
+    }
+    let litLen, dist;
+    if (btype === 1) { litLen = buildCanonical(FIX_LEN); dist = buildCanonical(FIX_DIST); }
+    else if (btype === 2) {
+      const hlit = bits(5) + 257, hdist = bits(5) + 1, hclen = bits(4) + 4;
+      const clenLens = new Array(19).fill(0);
+      for (let i = 0; i < hclen; i++) clenLens[CLEN_ORDER[i]] = bits(3);
+      const clenT = buildCanonical(clenLens);
+      const allLens = [];
+      while (allLens.length < hlit + hdist) {
+        const s = decodeSym(clenT);
+        if (s < 16) allLens.push(s);
+        else if (s === 16) { const r = bits(2) + 3; const prev = allLens[allLens.length - 1]; for (let i = 0; i < r; i++) allLens.push(prev); }
+        else if (s === 17) { const r = bits(3) + 3; for (let i = 0; i < r; i++) allLens.push(0); }
+        else { const r = bits(7) + 11; for (let i = 0; i < r; i++) allLens.push(0); }
+      }
+      litLen = buildCanonical(allLens.slice(0, hlit));
+      dist = buildCanonical(allLens.slice(hlit, hlit + hdist));
+    } else throw new Error('bad block type');
+    while (true) {
+      const s = decodeSym(litLen);
+      if (s < 256) out.push(s);
+      else if (s === 256) break;
+      else {
+        const li = s - 257;
+        const len = LEN_BASE[li] + bits(LEN_EXT[li]);
+        const ds = decodeSym(dist);
+        const d = DIST_BASE[ds] + bits(DIST_EXT[ds]);
+        const start = out.length - d;
+        for (let i = 0; i < len; i++) out.push(out[start + i]);
+      }
+    }
+  } while (!last);
+  return Uint8Array.from(out);
+}
+
+function pdfToLatin1(s) { return String.fromCharCode.apply(null, s); }
+function pdfInflateFlate(raw) {
+  const z = new Uint8Array(Math.max(0, raw.length - 6));
+  for (let i = 0; i < z.length; i++) z[i] = raw.charCodeAt(i + 2) & 0xff;
+  return pdfToLatin1(pdfInflateRaw(z));
+}
+function pdfGetDict(text, fromIdx) {
+  const s = text.indexOf('<<', fromIdx);
+  if (s < 0) return null;
+  let depth = 0, i = s;
+  for (; i < text.length; i++) {
+    if (text[i] === '<' && text[i + 1] === '<') depth++;
+    else if (text[i] === '>' && text[i + 1] === '>') { depth--; i++; if (depth === 0) break; }
+  }
+  return { dict: text.slice(s, i + 1) };
+}
+function pdfDictValue(dict, key) {
+  const m = dict.match(new RegExp('/' + key + '\\s+([^\\s\\[\\]<>]+)'));
+  if (m) return m[1];
+  const arr = dict.match(new RegExp('/' + key + '\\s*(\\[[^\\]]*\\])'));
+  if (arr) return arr[1];
+  return null;
+}
+function pdfParseXrefTable(chunk) {
+  const map = {};
+  const re = /xref\s+(\d+)\s+(\d+)\s+((?:(?:\d{10})\s+\d{5}\s+[nf]\s*)+)/g;
+  let m;
+  while ((m = re.exec(chunk))) {
+    const start = parseInt(m[1], 10), count = parseInt(m[2], 10);
+    const entries = m[3].trim().split(/\s+/);
+    for (let i = 0; i < count; i++) {
+      if (entries[i * 3 + 2] === 'n') map[start + i] = { offset: parseInt(entries[i * 3], 10) };
+    }
+  }
+  return map;
+}
+function pdfParseXrefStream(chunk) {
+  const objStart = chunk.search(/\d+\s+\d+\s+obj\s*<<[\s\S]*?\/Type\s*\/XRef/);
+  if (objStart < 0) return null;
+  const dd = pdfGetDict(chunk, objStart);
+  if (!dd) return null;
+  const w = pdfDictValue(dd.dict, 'W');
+  if (!w) return null;
+  const ws = w.slice(1, -1).trim().split(/\s+/).map(Number);
+  let idxPairs = [];
+  const index = pdfDictValue(dd.dict, 'Index');
+  if (index) {
+    const arr = index.slice(1, -1).trim().split(/\s+/).map(Number);
+    for (let i = 0; i + 1 < arr.length; i += 2) idxPairs.push([arr[i], arr[i + 1]]);
+  } else {
+    idxPairs = [[0, parseInt(pdfDictValue(dd.dict, 'Size'), 10)]];
+  }
+  const sm = chunk.match(/stream\r?\n([\s\S]*?)\r?\n?endstream/);
+  if (!sm) return null;
+  let raw = sm[1];
+  if (pdfDictValue(dd.dict, 'Filter') === '/FlateDecode') raw = pdfInflateFlate(raw);
+  const [w0, w1, w2] = ws;
+  const map = {};
+  for (const [istart, icount] of idxPairs) {
+    for (let i = 0; i < icount; i++) {
+      const off = istart + i;
+      const base = i * (w0 + w1 + w2);
+      const t = raw.charCodeAt(base) & 0xff;
+      if (w1 > 0) {
+        let f1 = 0;
+        for (let b = 0; b < w1; b++) f1 = (f1 << 8) | (raw.charCodeAt(base + 1 + b) & 0xff);
+        if (t === 1) map[off] = { offset: f1 };
+        else if (t === 2) {
+          let f2 = 0;
+          for (let b = 0; b < w2; b++) f2 = (f2 << 8) | (raw.charCodeAt(base + 1 + w1 + b) & 0xff);
+          map[off] = { stream: f1, index: f2 };
+        }
+      }
+    }
+  }
+  return map;
+}
+function pdfExtractEmbedded(data, first, targetIndex) {
+  let pos = first, idx = 0;
+  const len = data.length;
+  while (pos < len && idx <= targetIndex) {
+    while (pos < len && /\s/.test(data[pos])) pos++;
+    const lastStart = pos;
+    while (pos < len && /\d/.test(data[pos])) pos++;
+    while (pos < len && /\s/.test(data[pos])) pos++;
+    let end;
+    if (data[pos] === '<' && data[pos + 1] === '<') {
+      let depth = 0;
+      for (; pos < len; pos++) {
+        if (data[pos] === '<' && data[pos + 1] === '<') depth++;
+        else if (data[pos] === '>' && data[pos + 1] === '>') { depth--; pos++; if (depth === 0) break; }
+      }
+      end = pos + 1;
+    } else if (data.substr(pos, 6) === 'stream') {
+      const e = data.indexOf('endstream', pos);
+      end = e >= 0 ? e + 9 : len;
+      pos = end;
+    } else {
+      const m2 = /([\s<])/.exec(data.slice(pos));
+      end = m2 ? pos + m2.index : len;
+      pos = end;
+    }
+    if (idx === targetIndex) return data.slice(lastStart, end);
+    idx++;
+  }
+  return null;
+}
+async function countDrivePdfPages(fileId) {
+  const base = 'https://drive.usercontent.google.com/download?id=' + encodeURIComponent(fileId) + '&export=download';
+  async function fetchRange(start, end) {
+    const range = start < 0 ? 'bytes=-' + (-start) : 'bytes=' + start + '-' + end;
+    const res = await fetch(base, { headers: { Range: range }, signal: AbortSignal.timeout(25000) });
+    if (!res.ok) throw new Error('http ' + res.status);
+    return pdfToLatin1(new Uint8Array(await res.arrayBuffer()));
+  }
+  try {
+    const tail = await fetchRange(-4096, -1);
+    const rootM = tail.match(/\/Root\s+(\d+)\s+0\s+R/);
+    if (!rootM) return 0;
+    const rootNum = parseInt(rootM[1], 10);
+    const sxs = tail.match(/startxref\s+(\d+)/g);
+    if (!sxs) return 0;
+    const lastSx = parseInt(sxs[sxs.length - 1].match(/\d+/)[0], 10);
+    const lt = tail.lastIndexOf('trailer');
+    const td = lt >= 0 ? pdfGetDict(tail, lt) : null;
+    let xrefStm = td ? parseInt(pdfDictValue(td.dict, 'XRefStm'), 10) : NaN;
+    let prev = td ? parseInt(pdfDictValue(td.dict, 'Prev'), 10) : NaN;
+    const map = {};
+    let cursor = lastSx;
+    for (let hop = 0; hop < 8; hop++) {
+      const chunk = await fetchRange(cursor, cursor + 8192);
+      Object.assign(map, pdfParseXrefTable(chunk));
+      const stm = pdfParseXrefStream(chunk);
+      if (stm) Object.assign(map, stm);
+      const ti = chunk.indexOf('trailer');
+      if (ti >= 0) { const t = pdfGetDict(chunk, ti); if (t) { const p = pdfDictValue(t.dict, 'Prev'); if (p) prev = parseInt(p, 10); } }
+      if (!isNaN(xrefStm) && xrefStm !== cursor) {
+        const sc = await fetchRange(xrefStm, xrefStm + 8192);
+        const stm2 = pdfParseXrefStream(sc);
+        if (stm2) Object.assign(map, stm2);
+        xrefStm = NaN;
+      }
+      if (!isNaN(prev) && prev !== cursor) { cursor = prev; prev = NaN; continue; }
+      break;
+    }
+    const rootE = map[rootNum];
+    if (!rootE || rootE.offset === undefined) return 0;
+    const rootChunk = await fetchRange(rootE.offset, rootE.offset + 16384);
+    const pm = rootChunk.match(/\/Pages\s+(\d+)\s+0\s+R/);
+    if (!pm) return 0;
+    const pagesNum = parseInt(pm[1], 10);
+    const entry = map[pagesNum];
+    if (!entry) return 0;
+    let pagesChunk;
+    if (entry.offset !== undefined) {
+      pagesChunk = await fetchRange(entry.offset, entry.offset + 16384);
+    } else if (entry.stream !== undefined) {
+      const stE = map[entry.stream];
+      if (!stE || stE.offset === undefined) return 0;
+      const stChunk = await fetchRange(stE.offset, stE.offset + 262144);
+      const dd = pdfGetDict(stChunk, 0);
+      if (!dd) return 0;
+      const first = parseInt(pdfDictValue(dd.dict, 'First'), 10);
+      const sm = stChunk.match(/stream\r?\n([\s\S]*?)\r?\n?endstream/);
+      if (!sm) return 0;
+      let raw = sm[1];
+      if (pdfDictValue(dd.dict, 'Filter') === '/FlateDecode') raw = pdfInflateFlate(raw);
+      const embedded = pdfExtractEmbedded(raw, first, entry.index);
+      if (!embedded) return 0;
+      pagesChunk = embedded;
+    } else return 0;
+    const cm = pagesChunk.match(/\/Count\s+(\d+)/);
+    if (!cm) return 0;
+    return parseInt(cm[1], 10);
+  } catch (e) {
+    return 0;
+  }
 }
 
 function formatFileSize(bytes) {
