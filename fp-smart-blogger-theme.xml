@@ -6293,10 +6293,12 @@ async function translateText(text, targetLang) {
 }
 
 // Détection best-effort (taille + nombre de pages réel) d'un PDF depuis son URL, 100 % côté
-// navigateur (aucun backend). Normalise les liens Google Drive, lit la taille via HEAD puis
-// télécharge le fichier pour compter les pages avec pdfjs-dist (CDN). En cas d'échec (CORS,
-// réseau), on retombe sur le /Count lu dans l'en-tête du PDF. pages vaut 0 si le comptage a
-// échoué (jamais d'estimation par taille, qui serait trompeuse).
+// navigateur (aucun backend). Google Drive : l'URL de téléchargement uc?export=download
+// renvoie 403 aux fetchs cross-origin du navigateur, donc on lit la taille RÉELLE du fichier
+// dans la page viewer (/preview, lisible en CORS) via itemJson. Les pages d'un PDF Drive ne
+// sont pas comptables côté navigateur (téléchargement bloqué) : pages vaut 0. Sinon : HEAD
+// pour la taille puis téléchargement + pdfjs-dist (CDN) pour les pages, avec repli sur le
+// /Count de l'en-tête du PDF. pages vaut 0 si le comptage a échoué (jamais d'estimation).
 function normalizePdfUrl(url) {
   const u = url.trim();
   const gdMatch = u.match(/drive\.google\.com\/file\/d\/([^/?#&]+)/);
@@ -6304,8 +6306,28 @@ function normalizePdfUrl(url) {
   return u;
 }
 
+function extractDriveSizeFromViewerHtml(html) {
+  const item = html.match(/itemJson:\s*\[([\s\S]*?)\]\s*\};/);
+  if (!item) return null;
+  const sizeMatch = item[1].match(/\[null,null,"(\d+)"\]/);
+  if (!sizeMatch) return null;
+  const bytes = parseInt(sizeMatch[1], 10);
+  return bytes > 0 ? bytes : null;
+}
+
 async function detectPdfMeta(url) {
   if (!url || !url.trim()) return null;
+  const gdMatch = url.trim().match(/drive\.google\.com\/file\/d\/([^/?#&]+)/);
+  if (gdMatch) {
+    try {
+      const res = await fetch('https://drive.google.com/file/d/' + gdMatch[1] + '/preview', { signal: AbortSignal.timeout(20000) });
+      if (res.ok) {
+        const bytes = extractDriveSizeFromViewerHtml(await res.text());
+        if (bytes) return { size: formatFileSize(bytes), pages: 0 };
+      }
+    } catch {}
+    return null;
+  }
   const target = normalizePdfUrl(url);
   let bytes = null;
   try {
