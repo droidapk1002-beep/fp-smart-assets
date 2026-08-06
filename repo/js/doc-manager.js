@@ -684,6 +684,8 @@ function extractDriveSizeFromViewerHtml(html) {
   return bytes > 0 ? bytes : null;
 }
 
+const PDF_PAGES_PROXY = 'https://script.google.com/macros/s/AKfycbx9Ax9k1WG187KJ5nivTT-dUC_07vFkF7A9IHXcxqafeWbyE0rpc7XKFlUJ280DcYQcUw/exec';
+
 async function detectPdfMeta(url) {
   if (!url || !url.trim()) return null;
   const gdMatch = url.trim().match(/drive\.google\.com\/file\/d\/([^/?#&]+)/);
@@ -694,19 +696,7 @@ async function detectPdfMeta(url) {
       if (res.ok) {
         const bytes = extractDriveSizeFromViewerHtml(await res.text());
         if (bytes) {
-          let pages = await countDrivePdfPages(fileId);
-          if (!pages) {
-            try {
-              const dl = await fetch('https://drive.usercontent.google.com/download?id=' + encodeURIComponent(fileId) + '&export=download', { signal: AbortSignal.timeout(30000) });
-              if (dl.ok) {
-                const buf = await dl.arrayBuffer();
-                const pdfjs = await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@6.2.108/legacy/build/pdf.min.mjs');
-                const doc = await pdfjs.getDocument({ data: buf, disableWorker: true, isEvalSupported: false }).promise;
-                if (doc && typeof doc.numPages === 'number' && doc.numPages > 0) pages = doc.numPages;
-                if (typeof doc.destroy === 'function') doc.destroy();
-              }
-            } catch { /* leave pages = 0 */ }
-          }
+          const pages = await countDrivePdfPages(fileId);
           return { size: formatFileSize(bytes), pages };
         }
       }
@@ -949,75 +939,14 @@ function pdfExtractEmbedded(data, first, targetIndex) {
   return null;
 }
 async function countDrivePdfPages(fileId) {
-  const base = 'https://drive.usercontent.google.com/download?id=' + encodeURIComponent(fileId) + '&export=download';
-  async function fetchRange(start, end) {
-    const range = start < 0 ? 'bytes=-' + (-start) : 'bytes=' + start + '-' + end;
-    const res = await fetch(base, { headers: { Range: range }, signal: AbortSignal.timeout(25000) });
-    if (!res.ok) throw new Error('http ' + res.status);
-    return pdfToLatin1(new Uint8Array(await res.arrayBuffer()));
-  }
+  if (!PDF_PAGES_PROXY) return 0;
   try {
-    const tail = await fetchRange(-4096, -1);
-    const rootM = tail.match(/\/Root\s+(\d+)\s+0\s+R/);
-    if (!rootM) return 0;
-    const rootNum = parseInt(rootM[1], 10);
-    const sxs = tail.match(/startxref\s+(\d+)/g);
-    if (!sxs) return 0;
-    const lastSx = parseInt(sxs[sxs.length - 1].match(/\d+/)[0], 10);
-    const lt = tail.lastIndexOf('trailer');
-    const td = lt >= 0 ? pdfGetDict(tail, lt) : null;
-    let xrefStm = td ? parseInt(pdfDictValue(td.dict, 'XRefStm'), 10) : NaN;
-    let prev = td ? parseInt(pdfDictValue(td.dict, 'Prev'), 10) : NaN;
-    const map = {};
-    let cursor = lastSx;
-    for (let hop = 0; hop < 8; hop++) {
-      const chunk = await fetchRange(cursor, cursor + 8192);
-      Object.assign(map, pdfParseXrefTable(chunk));
-      const stm = pdfParseXrefStream(chunk);
-      if (stm) Object.assign(map, stm);
-      const ti = chunk.indexOf('trailer');
-      if (ti >= 0) { const t = pdfGetDict(chunk, ti); if (t) { const p = pdfDictValue(t.dict, 'Prev'); if (p) prev = parseInt(p, 10); } }
-      if (!isNaN(xrefStm) && xrefStm !== cursor) {
-        const sc = await fetchRange(xrefStm, xrefStm + 8192);
-        const stm2 = pdfParseXrefStream(sc);
-        if (stm2) Object.assign(map, stm2);
-        xrefStm = NaN;
-      }
-      if (!isNaN(prev) && prev !== cursor) { cursor = prev; prev = NaN; continue; }
-      break;
-    }
-    const rootE = map[rootNum];
-    if (!rootE || rootE.offset === undefined) return 0;
-    const rootChunk = await fetchRange(rootE.offset, rootE.offset + 16384);
-    const pm = rootChunk.match(/\/Pages\s+(\d+)\s+0\s+R/);
-    if (!pm) return 0;
-    const pagesNum = parseInt(pm[1], 10);
-    const entry = map[pagesNum];
-    if (!entry) return 0;
-    let pagesChunk;
-    if (entry.offset !== undefined) {
-      pagesChunk = await fetchRange(entry.offset, entry.offset + 16384);
-    } else if (entry.stream !== undefined) {
-      const stE = map[entry.stream];
-      if (!stE || stE.offset === undefined) return 0;
-      const stChunk = await fetchRange(stE.offset, stE.offset + 262144);
-      const dd = pdfGetDict(stChunk, 0);
-      if (!dd) return 0;
-      const first = parseInt(pdfDictValue(dd.dict, 'First'), 10);
-      const sm = stChunk.match(/stream\r?\n([\s\S]*?)\r?\n?endstream/);
-      if (!sm) return 0;
-      let raw = sm[1];
-      if (pdfDictValue(dd.dict, 'Filter') === '/FlateDecode') raw = pdfInflateFlate(raw);
-      const embedded = pdfExtractEmbedded(raw, first, entry.index);
-      if (!embedded) return 0;
-      pagesChunk = embedded;
-    } else return 0;
-    const cm = pagesChunk.match(/\/Count\s+(\d+)/);
-    if (!cm) return 0;
-    return parseInt(cm[1], 10);
-  } catch (e) {
-    return 0;
-  }
+    const res = await fetch(PDF_PAGES_PROXY + '?id=' + encodeURIComponent(fileId), { signal: AbortSignal.timeout(30000) });
+    if (!res.ok) return 0;
+    const j = await res.json();
+    const p = parseInt(j && j.pages, 10);
+    return Number.isFinite(p) && p > 0 && p < 5000 ? p : 0;
+  } catch { return 0; }
 }
 
 function formatFileSize(bytes) {
