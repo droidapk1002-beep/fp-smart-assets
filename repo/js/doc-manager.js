@@ -694,7 +694,19 @@ async function detectPdfMeta(url) {
       if (res.ok) {
         const bytes = extractDriveSizeFromViewerHtml(await res.text());
         if (bytes) {
-          const pages = await countDrivePdfPages(fileId);
+          let pages = await countDrivePdfPages(fileId);
+          if (!pages) {
+            try {
+              const dl = await fetch('https://drive.usercontent.google.com/download?id=' + encodeURIComponent(fileId) + '&export=download', { signal: AbortSignal.timeout(30000) });
+              if (dl.ok) {
+                const buf = await dl.arrayBuffer();
+                const pdfjs = await import('https://cdn.jsdelivr.net/npm/pdfjs-dist@6.2.108/legacy/build/pdf.min.mjs');
+                const doc = await pdfjs.getDocument({ data: buf, disableWorker: true, isEvalSupported: false }).promise;
+                if (doc && typeof doc.numPages === 'number' && doc.numPages > 0) pages = doc.numPages;
+                if (typeof doc.destroy === 'function') doc.destroy();
+              }
+            } catch { /* leave pages = 0 */ }
+          }
           return { size: formatFileSize(bytes), pages };
         }
       }
@@ -829,7 +841,7 @@ function pdfInflateRaw(data) {
   return Uint8Array.from(out);
 }
 
-function pdfToLatin1(s) { return String.fromCharCode.apply(null, s); }
+function pdfToLatin1(s) { let out = ''; for (let i = 0; i < s.length; i += 8000) out += String.fromCharCode.apply(null, s.subarray(i, i + 8000)); return out; }
 function pdfInflateFlate(raw) {
   const z = new Uint8Array(Math.max(0, raw.length - 6));
   for (let i = 0; i < z.length; i++) z[i] = raw.charCodeAt(i + 2) & 0xff;
